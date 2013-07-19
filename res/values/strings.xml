@@ -4673,6 +4673,7 @@
     <string name="toggleFlashlight">Flashlight</string>
     <string name="toggleLockScreen">Lock Screen</string>
     <string name="toggleWimax">WiMAX</string>
+    <string name="toggleNfc">NFC</string>
 
     <!-- Themes settings #CM -->
     <string name="themes_settings_title">Themes</string>
