@@ -916,8 +916,6 @@
         <item>5000</item>
     </string-array>
 
-
-
     <!-- Values for premium SMS permission selector [CHAR LIMIT=30] -->
     <string-array name="security_settings_premium_sms_values">
         <!-- Ask user before sending to premium SMS short code. -->
@@ -993,5 +991,12 @@
         <item>0</item>
         <item>1</item>
         <item>2</item>
+    </string-array>
+
+    <!--  Values for profile Wi-Fi triggers -->
+    <string-array name="profile_trigger_wifi_options" translatable="false">
+        <item>@string/profile_trigger_connect</item>
+        <item>@string/profile_trigger_disconnect</item>
+        <item>@string/profile_trigger_notrigger</item>
     </string-array>
 </resources>
