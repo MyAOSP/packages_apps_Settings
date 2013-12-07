@@ -72,52 +72,55 @@ public class PerformanceSettings extends SettingsPreferenceFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPerfProfileDefaultEntry = getString(
-                com.android.internal.R.string.config_perf_profile_default_entry);
-        mPerfProfileEntries = getResources().getStringArray(
-                com.android.internal.R.array.perf_profile_entries);
-        mPerfProfileValues = getResources().getStringArray(
-                com.android.internal.R.array.perf_profile_values);
+        if (getPreferenceManager() != null) {
 
-        addPreferencesFromResource(R.xml.performance_settings);
+            mPerfProfileDefaultEntry = getString(
+                    com.android.internal.R.string.config_perf_profile_default_entry);
+            mPerfProfileEntries = getResources().getStringArray(
+                    com.android.internal.R.array.perf_profile_entries);
+            mPerfProfileValues = getResources().getStringArray(
+                    com.android.internal.R.array.perf_profile_values);
 
-        PreferenceScreen prefSet = getPreferenceScreen();
+            addPreferencesFromResource(R.xml.performance_settings);
 
-        mPerfProfilePref = (ListPreference)prefSet.findPreference(PERF_PROFILE_PREF);
-        String perfProfileProp = getString(com.android.internal.R.string.config_perf_profile_prop);
-        if (mPerfProfilePref != null && TextUtils.isEmpty(perfProfileProp)) {
-            prefSet.removePreference(mPerfProfilePref);
-            mPerfProfilePref = null;
-        } else {
-            mPerformanceProfileObserver = new PerformanceProfileObserver(new Handler());
+            PreferenceScreen prefSet = getPreferenceScreen();
 
-            mPerfProfilePref.setEntries(mPerfProfileEntries);
-            mPerfProfilePref.setEntryValues(mPerfProfileValues);
-            setCurrentValue();
-            mPerfProfilePref.setOnPreferenceChangeListener(this);
-        }
+            mPerfProfilePref = (ListPreference)prefSet.findPreference(PERF_PROFILE_PREF);
+            String perfProfileProp = getString(com.android.internal.R.string.config_perf_profile_prop);
+            if (mPerfProfilePref != null && TextUtils.isEmpty(perfProfileProp)) {
+                prefSet.removePreference(mPerfProfilePref);
+                mPerfProfilePref = null;
+            } else {
+                mPerformanceProfileObserver = new PerformanceProfileObserver(new Handler());
 
-        mUse16bppAlphaPref = (CheckBoxPreference) prefSet.findPreference(USE_16BPP_ALPHA_PREF);
-        String use16bppAlpha = SystemProperties.get(USE_16BPP_ALPHA_PROP, "0");
-        mUse16bppAlphaPref.setChecked("1".equals(use16bppAlpha));
-
-        /* Display the warning dialog */
-        alertDialog = new AlertDialog.Builder(getActivity()).create();
-        alertDialog.setTitle(R.string.performance_settings_warning_title);
-        alertDialog.setMessage(getResources().getString(R.string.performance_settings_warning));
-        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,
-                getResources().getString(com.android.internal.R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
-                    }
-                });
-        alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(DialogInterface dialog) {
-                PerformanceSettings.this.finish();
+                mPerfProfilePref.setEntries(mPerfProfileEntries);
+                mPerfProfilePref.setEntryValues(mPerfProfileValues);
+                setCurrentValue();
+                mPerfProfilePref.setOnPreferenceChangeListener(this);
             }
-        });
-        alertDialog.show();
+
+            mUse16bppAlphaPref = (CheckBoxPreference) prefSet.findPreference(USE_16BPP_ALPHA_PREF);
+            String use16bppAlpha = SystemProperties.get(USE_16BPP_ALPHA_PROP, "0");
+            mUse16bppAlphaPref.setChecked("1".equals(use16bppAlpha));
+
+            /* Display the warning dialog */
+            alertDialog = new AlertDialog.Builder(getActivity()).create();
+            alertDialog.setTitle(R.string.performance_settings_warning_title);
+            alertDialog.setMessage(getResources().getString(R.string.performance_settings_warning));
+            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,
+                    getResources().getString(com.android.internal.R.string.ok),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    });
+            alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                public void onCancel(DialogInterface dialog) {
+                    PerformanceSettings.this.finish();
+                }
+            });
+            alertDialog.show();
+        }
     }
 
     @Override

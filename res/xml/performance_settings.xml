@@ -22,12 +22,14 @@
     <PreferenceScreen
         android:key="processor"
         android:fragment="com.android.settings.cyanogenmod.Processor"
-        android:title="@string/processor_title" />
+        android:title="@string/processor_title"
+        android:summary="@string/processor_summary" />
 
     <PreferenceScreen
         android:key="ioscheduler"
         android:fragment="com.android.settings.cyanogenmod.IOScheduler"
-        android:title="@string/io_scheds_title" />
+        android:title="@string/io_scheds_title"
+        android:summary="@string/io_scheds_summary" />
 
     <ListPreference
         android:key="pref_perf_profile"
@@ -38,7 +40,8 @@
     <PreferenceScreen
         android:key="memory_management"
         android:fragment="com.android.settings.cyanogenmod.MemoryManagement"
-        android:title="@string/memory_management_title" />
+        android:title="@string/memory_management_title"
+        android:summary="@string/memory_management_summary" />
 
     <CheckBoxPreference
         android:key="pref_use_16bpp_alpha"
