@@ -83,7 +83,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private PreferenceScreen mDisplayRotationPreference;
 
     private final Configuration mCurConfig = new Configuration();
-    
+
     private ListPreference mScreenTimeoutPreference;
     private Preference mScreenSaverPreference;
 
@@ -298,12 +298,6 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         resolver.registerContentObserver(
                 Settings.System.getUriFor(Settings.System.ACCELEROMETER_ROTATION), true,
                 mAccelerometerRotationObserver);
-
-        if (mWifiDisplayPreference != null) {
-            getActivity().registerReceiver(mReceiver, new IntentFilter(
-                    DisplayManager.ACTION_WIFI_DISPLAY_STATUS_CHANGED));
-            mWifiDisplayStatus = mDisplayManager.getWifiDisplayStatus();
-        }
 
         if (mAdaptiveBacklight != null) {
             mAdaptiveBacklight.setChecked(AdaptiveBacklight.isEnabled());
