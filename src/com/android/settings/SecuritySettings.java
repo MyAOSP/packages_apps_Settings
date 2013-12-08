@@ -585,9 +585,6 @@ public class SecuritySettings extends RestrictedSettingsFragment
             Settings.System.putInt(getContentResolver(),
                     Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL,
                     mQuickUnlock.isChecked() ? 1 : 0);
-            mQuickUnlock.setSummary(
-                    mQuickUnlock.isChecked() ? R.string.lockscreen_quick_unlock_summary_disabled :
-                    R.string.lockscreen_quick_unlock_summary_enabled);
         } else if (KEY_TOGGLE_VERIFY_APPLICATIONS.equals(key)) {
             Settings.Global.putInt(getContentResolver(), Settings.Global.PACKAGE_VERIFIER_ENABLE,
                     mToggleVerifyApps.isChecked() ? 1 : 0);
