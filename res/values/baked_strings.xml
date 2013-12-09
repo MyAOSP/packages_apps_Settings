@@ -288,6 +288,8 @@
     <string name="title_quick_access">Show in drawer</string>
     <string name="title_quick_access_linked">Linked layout</string>
     <string name="summary_quick_access_linked">Use the same tiles and layout as the Quick Settings panel</string>
+    <string name="panel_view_background">Background</string>
+    <string name="panel_view_background_title">Notification panel background style</string>
     <!-- Expanded desktop -->
     <string name="expanded_desktop_disabled">Disabled</string>
     <string name="expanded_desktop_status_bar">Status bar visible</string>

@@ -53,4 +53,29 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="panel_view_background"
+        android:title="@string/panel_view_background">
+
+        <ListPreference
+            android:key="panel_background_style"
+            android:persistent="false"
+            android:dialogTitle="@string/panel_view_background_title"
+            android:title="@string/panel_view_background_title"
+            android:entries="@array/panel_view_background_entries"
+            android:entryValues="@array/panel_view_background_values" />
+
+        <com.android.settings.colorpicker.ColorPickerPreference
+            android:key="panel_view_background_color_fill"
+            android:title="Panel view background"
+            android:defaultValue="FF000000"
+            alpahSlider="true" />
+
+        <com.android.settings.baked.SeekBarPreference
+            android:key="panel_wallpaper_alpha"
+            android:title="@string/transparency"
+            android:defaultValue="0" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
