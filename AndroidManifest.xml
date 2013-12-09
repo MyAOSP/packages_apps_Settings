@@ -103,7 +103,7 @@
         <uses-library android:name="org.cyanogenmod.hardware"
             android:required="false" />
 
-        <receiver android:name=".cyanogenmod.LockscreenInterface$DeviceAdminLockscreenReceiver"
+        <receiver android:name=".baked.LockscreenInterface$DeviceAdminLockscreenReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data android:name="android.app.device_admin"
                 android:resource="@xml/device_admin_lockscreen" />
@@ -112,7 +112,7 @@
         <!-- Only system/su can open this activity -->
         <!-- This activity will then call the MultitaskSuRequestActivity to create a new task stack -->
         <activity
-            android:name=".cyanogenmod.superuser.RequestActivity"
+            android:name=".baked.superuser.RequestActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/superuser"
             android:launchMode="singleTask"
@@ -125,7 +125,7 @@
         <!-- This is activity is started in multiuser mode when the user invoking su -->
         <!-- is not the device owner (user id 0). -->
         <activity
-            android:name=".cyanogenmod.superuser.NotifyActivity"
+            android:name=".baked.superuser.NotifyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/superuser"
             android:launchMode="singleTask"
@@ -137,7 +137,7 @@
 
         <!-- Multiple instances of this activity can be running for multiple su requests -->
         <activity
-            android:name=".cyanogenmod.superuser.MultitaskSuRequestActivity"
+            android:name=".baked.superuser.MultitaskSuRequestActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="false"
@@ -147,11 +147,11 @@
             android:theme="@style/RequestThemeDark" />
 
         <receiver
-            android:name=".cyanogenmod.superuser.SuReceiver"
+            android:name=".baked.superuser.SuReceiver"
             android:permission="android.permission.REPORT_SUPERUSER" />
 
         <receiver
-            android:name=".cyanogenmod.superuser.PackageChangeReceiver" >
+            android:name=".baked.superuser.PackageChangeReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <data android:scheme="package" />
@@ -234,14 +234,6 @@
                 android:value="com.android.settings.wifi.WifiSettings" />
             <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
                 android:resource="@id/wifi_settings" />
-        </activity>
-
-        <activity android:name="Settings$AnonymousStatsActivity"
-                android:label="@string/anonymous_statistics_title"
-                android:configChanges="orientation|keyboardHidden|screenSize"
-                android:clearTaskOnLaunch="true">
-            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
-                android:value="com.android.settings.cmstats.AnonymousStats" />
         </activity>
 
         <!-- Keep compatibility with old shortcuts. -->
@@ -1475,13 +1467,6 @@
             </intent-filter>
         </activity>
 
-        <!-- DeviceInfo adds the user's requested build to stats upload.  -->
-        <receiver android:name=".DeviceInfo$StatsReportReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.STATISTICS_REPORT" />
-            </intent-filter>
-        </receiver>
-
         <activity android:name="BatteryInfo" android:label="@string/battery_info_label"
                   android:taskAffinity="com.android.settings"
                   android:parentActivityName="Settings">
@@ -1684,10 +1669,10 @@
             android:theme="@style/CryptKeeperBlankTheme"
         />
 
-        <!-- CyanogenMod activities Start -->
-        <activity android:name=".cyanogenmod.SystemUiSettings"/>
+        <!-- baked activities Start -->
+        <activity android:name=".baked.SystemUiSettings"/>
 
-        <activity android:name=".cyanogenmod.AutoBrightnessSetup"
+        <activity android:name=".baked.AutoBrightnessSetup"
                 android:excludeFromRecents="true"
                 android:theme="@*android:style/Theme.Holo.Dialog.Alert" />
 
@@ -1744,33 +1729,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".cyanogenmod.LockscreenTargets" />
-
-        <activity android:name=".cyanogenmod.PerformanceSettings" />
+        <activity android:name=".baked.LockscreenTargets" />
 
         <activity android:name=".ApnEditor" />
 
-        <activity android:name="Settings$AnonymousStatsActivity"
-                android:label="@string/anonymous_statistics_title"
-                android:configChanges="orientation|keyboardHidden|screenSize"
-                android:clearTaskOnLaunch="true">
-            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
-                android:value="com.android.settings.cmstats.AnonymousStats" />
-        </activity>
-
-        <activity android:name=".cyanogenmod.ChangeLog" android:label="@string/changelog_title">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".cyanogenmod.LockscreenInterface" />
+        <activity android:name=".baked.LockscreenInterface" />
 
         <activity android:name=".notificationlight.NotificationLightSettings" />
 
         <activity android:name=".notificationlight.BatteryLightSettings" />
 
-        <activity android:name=".cyanogenmod.LockscreenInterface" />
+        <activity android:name=".baked.LockscreenInterface" />
 
          <!-- "Blacklist settings" UI, used only on voice-capable phone devices. -->
         <activity android:name="Settings$BlacklistSettingsActivity"
@@ -1789,7 +1758,7 @@
                 android:resource="@id/security_settings" />
         </activity>
 
-        <!-- CyanogenMod activities End -->
+        <!-- baked activities End -->
 
         <!-- Pseudo-activity used to provide an intent-filter entry point to encryption settings -->
         <activity android:name="Settings$CryptKeeperSettingsActivity"
@@ -1911,12 +1880,6 @@
             <intent-filter>
                 <action android:name="android.settings.SHOW_REGULATORY_INFO" />
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".cyanogenmod.ChangeLog" android:label="@string/changelog_title">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
 

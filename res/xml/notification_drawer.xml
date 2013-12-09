@@ -29,12 +29,12 @@
     <PreferenceCategory
         android:title="@string/category_quick_access" >
 
-        <com.android.settings.cyanogenmod.SystemSettingCheckBoxPreference
+        <com.android.settings.baked.SystemSettingCheckBoxPreference
             android:key="qs_quick_access"
             android:title="@string/title_quick_access"
             android:defaultValue="false" />
 
-        <com.android.settings.cyanogenmod.SystemSettingCheckBoxPreference
+        <com.android.settings.baked.SystemSettingCheckBoxPreference
             android:key="qs_quick_access_linked"
             android:title="@string/title_quick_access_linked"
             android:summary="@string/summary_quick_access_linked"
@@ -50,6 +50,7 @@
             android:fragment="com.android.settings.quicksettings.QuickSettingsTiles" >
             <extra android:name="config_ribbon" android:value="true" />
         </PreferenceScreen>
+
     </PreferenceCategory>
 
 </PreferenceScreen>
