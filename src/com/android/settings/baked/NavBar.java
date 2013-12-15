@@ -87,7 +87,7 @@ public class NavBar extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.add(0, MENU_RESET, 0, R.string.profile_reset_title)
+        menu.add(0, MENU_RESET, 0, R.string.reset)
         .setIcon(R.drawable.ic_settings_backup)
         .setAlphabeticShortcut('r')
         .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM |
@@ -104,7 +104,7 @@ public class NavBar extends Fragment {
         switch (item.getItemId()) {
         case MENU_RESET:
             new AlertDialog.Builder(mActivity)
-            .setTitle(R.string.lockscreen_target_reset_title)
+            .setTitle(R.string.reset)
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setMessage(R.string.navigation_bar_reset_message)
             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {

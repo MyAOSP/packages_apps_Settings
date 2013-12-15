@@ -62,11 +62,12 @@
             android:entries="@array/lockscreen_background_entries"
             android:entryValues="@array/lockscreen_background_values" />
 
-        <com.android.settings.colorpicker.ColorPickerPreference
+        <ColorPickerPreference
             android:key="lockscreen_background_color_fill"
             android:title="@string/background_color_fill_title"
-            android:defaultValue="00000000"
-            alphaSlider="true" />
+            android:defaultValue="@color/transparent"
+            android:inputEnabled="true"
+            android:alphaSlider="true" />
 
         <com.android.settings.baked.SeekBarPreference
             android:key="lockscreen_wallpaper_alpha"

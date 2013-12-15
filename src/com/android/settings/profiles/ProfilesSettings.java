@@ -175,7 +175,7 @@ public class ProfilesSettings extends SettingsPreferenceFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.add(0, MENU_RESET, 0, R.string.profile_reset_title)
+        menu.add(0, MENU_RESET, 0, R.string.reset)
                 .setIcon(R.drawable.ic_settings_backup) // use the backup icon
                 .setAlphabeticShortcut('r')
                 .setEnabled(mEnabled)
@@ -245,7 +245,7 @@ public class ProfilesSettings extends SettingsPreferenceFragment {
 
     private void resetAll() {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setTitle(R.string.profile_reset_title);
+        alert.setTitle(R.string.reset);
         alert.setIconAttribute(android.R.attr.alertDialogIcon);
         alert.setMessage(R.string.profile_reset_message);
         alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {

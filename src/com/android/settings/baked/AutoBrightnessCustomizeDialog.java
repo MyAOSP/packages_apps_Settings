@@ -110,7 +110,7 @@ public class AutoBrightnessCustomizeDialog extends AlertDialog
 
         setButton(DialogInterface.BUTTON_POSITIVE, context.getString(android.R.string.ok), this);
         setButton(DialogInterface.BUTTON_NEUTRAL,
-                context.getString(R.string.auto_brightness_reset_button), this);
+                context.getString(R.string.reset), this);
         setButton(DialogInterface.BUTTON_NEGATIVE, context.getString(android.R.string.cancel), this);
 
         super.onCreate(savedInstanceState);

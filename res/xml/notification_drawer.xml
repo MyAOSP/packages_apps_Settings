@@ -65,11 +65,12 @@
             android:entries="@array/panel_view_background_entries"
             android:entryValues="@array/panel_view_background_values" />
 
-        <com.android.settings.colorpicker.ColorPickerPreference
+        <ColorPickerPreference
             android:key="panel_view_background_color_fill"
-            android:title="Panel view background"
-            android:defaultValue="FF000000"
-            alpahSlider="true" />
+            android:title="@string/background_color_fill_title"
+            android:defaultValue="@color/transparent"
+            android:inputEnabled="true"
+            android:alphaSlider="true" />
 
         <com.android.settings.baked.SeekBarPreference
             android:key="panel_wallpaper_alpha"

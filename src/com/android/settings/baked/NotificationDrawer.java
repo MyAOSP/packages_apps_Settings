@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.ColorPickerPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -38,7 +39,6 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.android.settings.R;
-import com.android.settings.colorpicker.ColorPickerPreference;
 import com.android.settings.baked.SeekBarPreference;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.settings.Utils;

@@ -18,10 +18,37 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:key="status_bar_battery_style"
-        android:dialogTitle="@string/status_bar_battery_style_title"
-        android:title="@string/status_bar_battery_style_title"
+        android:key="battery_style"
+        android:dialogTitle="@string/battery_style_title"
+        android:title="@string/battery_style_title"
         android:entries="@array/status_bar_battery_style_entries"
-        android:entryValues="@array/status_bar_battery_style_values" />
+        android:entryValues="@array/status_bar_battery_style_values"
+        android:defaultValue="0" />
+
+    <ColorPickerPreference
+        android:key="battery_color"
+        android:title="@string/battery_color_title"
+        android:defaultValue="@color/battery_white"
+        android:inputEnabled="true" />
+
+    <ListPreference
+        android:key="circle_battery_animation_speed"
+        android:dialogTitle="@string/circle_battery_animation_speed"
+        android:title="@string/circle_battery_animation_speed"
+        android:entries="@array/circle_battery_animation_speed_entries"
+        android:entryValues="@array/circle_battery_animation_speed_values"
+        android:defaultValue="3" />
+
+    <ColorPickerPreference
+        android:key="battery_text_color"
+        android:title="@string/battery_text_color"
+        android:defaultValue="@color/battery_white"
+        android:inputEnabled="true" />
+
+    <ColorPickerPreference
+        android:key="battery_text_charging_color"
+        android:title="@string/battery_text_charging_color"
+        android:defaultValue="@color/battery_red"
+        android:inputEnabled="true" />
 
 </PreferenceScreen>
