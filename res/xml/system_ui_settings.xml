@@ -38,6 +38,11 @@
             android:fragment="com.android.settings.baked.NotificationDrawer"
             android:title="@string/notification_drawer_title" />
 
+        <com.android.settings.baked.SystemSettingCheckBoxPreference
+            android:key="enable_translucent_decor"
+            android:title="@string/enable_translucent_decor_title"
+            android:defaultValue="@bool/config_enableTranslucentDecor" />
+
         <ListPreference
             android:key="expanded_desktop"
             android:title="@string/power_menu_expanded_desktop"
