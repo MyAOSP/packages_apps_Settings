@@ -77,14 +77,6 @@ public class StatusBarBattery extends SettingsPreferenceFragment implements
         addPreferencesFromResource(R.xml.status_bar_battery);
         mPrefs = getPreferenceScreen();
 
-        pm = getPackageManager();
-        try {
-            systemUiResources = pm.getResourcesForApplication("com.android.systemui");
-        } catch (Exception e) {
-            Log.e(TAG, "can't access systemui resources",e);
-            return null;
-        }
-
         mStatusBarBattery = (ListPreference) findPreference(BATTERY_STYLE);
         mBatteryColor = (ColorPickerPreference) findPreference(BATTERY_COLOR);
         mBatteryTextColor = (ColorPickerPreference) findPreference(BATTERY_TEXT_COLOR);
