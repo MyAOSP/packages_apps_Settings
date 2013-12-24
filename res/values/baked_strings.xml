@@ -195,13 +195,13 @@
     <string name="icon_picker_twitter">Twitter</string>
     <!-- Lock clock -->
     <string name="lock_clock_title">Clock widget</string>
-    <string name="lock_clock_summary">View or change how the \'cLock\' Home and Lock screen widgets will display</string>
+    <string name="lock_clock_summary">Customize the default Lock and Home screen widget</string>
     <!-- Lockscreen widgets -->
     <string name="lockscreen_widgets_category_title">Widgets</string>
     <string name="lockscreen_maximize_widgets_title">Maximize widgets</string>
-    <string name="lockscreen_maximize_widgets_summary">Show widgets maximized and the unlock minimized when the screen is turned on</string>
-    <string name="lockscreen_enable_widgets_title">Widget pager</string>
-    <string name="lockscreen_enable_widgets_summary">Allow multiple widget pages to be added and selected</string>
+    <string name="lockscreen_maximize_widgets_summary">Expand widgets when the screen is turned on</string>
+    <!-- Custom widgets -->
+    <string name="lockscreen_custom_widgets_title">Custom widgets</string>
     <!-- Quick unlock -->
     <string name="lockscreen_quick_unlock_title">Quick unlock</string>
     <string name="lockscreen_quick_unlock_summary_enabled">Enabled no need to hit enter</string>
