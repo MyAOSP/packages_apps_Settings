@@ -48,8 +48,8 @@ import android.util.Log;
 
 import com.android.internal.telephony.util.BlacklistUtils;
 import com.android.internal.widget.LockPatternUtils;
+import com.android.settings.baked.ButtonSettings;
 import com.android.settings.R;
-import com.android.settings.cyanogenmod.ButtonSettings;
 
 import java.util.ArrayList;
 import java.util.List;
