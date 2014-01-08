@@ -18,7 +18,6 @@ package com.android.settings.baked;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.admin.DeviceAdminReceiver;
 import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -56,11 +55,9 @@ import java.io.IOException;
 public class LockscreenInterface extends SettingsPreferenceFragment implements
             Preference.OnPreferenceChangeListener {
 
-    private static final String TAG = "LockscreenInterface";
-
+    private static final String LOCKSCREEN_WIDGETS_CATEGORY = "lockscreen_widgets_category";
     private static final String KEY_ENABLE_WIDGETS = "keyguard_enable_widgets";
     private static final String KEY_LOCK_CLOCK = "lock_clock";
-    private static final String LOCKSCREEN_WIDGETS_CATEGORY = "lockscreen_widgets_category";
     private static final String LOCKSCREEN_BACKGROUND = "lockscreen_background";
     private static final String LOCKSCREEN_BACKGROUND_STYLE = "lockscreen_background_style";
     private static final String LOCKSCREEN_BACKGROUND_COLOR_FILL = "lockscreen_background_color_fill";
@@ -74,70 +71,58 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
     private CheckBoxPreference mEnableKeyguardWidgets;
     private ColorPickerPreference mLockColorFill;
     private ListPreference mLockBackground;
+    private LockPatternUtils mLockUtils;
     private SeekBarPreference mWallpaperAlpha;
 
     private ChooseLockSettingsHelper mChooseLockSettingsHelper;
     private DevicePolicyManager mDPM;
     private PreferenceCategory mLockscreenBackground;
-    private boolean mIsPrimary;
+
     private File wallpaperImage;
     private File wallpaperTemporary;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.lockscreen_interface_settings);
 
         mChooseLockSettingsHelper = new ChooseLockSettingsHelper(getActivity());
-        mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+        mLockUtils = mChooseLockSettingsHelper.utils();
+        mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
 
-        addPreferencesFromResource(R.xml.lockscreen_interface_settings);
-        PreferenceCategory widgetsCategory = (PreferenceCategory) findPreference(LOCKSCREEN_WIDGETS_CATEGORY);
+        // Find categories
+        PreferenceCategory widgetsCategory = (PreferenceCategory)
+                findPreference(LOCKSCREEN_WIDGETS_CATEGORY);
 
-        // Only add if device has LockClock installed
+        // Find preferences
+        mEnableKeyguardWidgets = (CheckBoxPreference) findPreference(KEY_ENABLE_WIDGETS);
+
+        // Remove/disable custom widgets based on device RAM and policy
+        if (ActivityManager.isLowRamDeviceStatic()) {
+            // Widgets take a lot of RAM, so disable them on low-memory devices
+            widgetsCategory.removePreference(findPreference(KEY_ENABLE_WIDGETS));
+            mEnableKeyguardWidgets = null;
+        } else {
+            // Secondary user is logged in, remove all primary user specific preferences
+            checkDisabledByPolicy(mEnableKeyguardWidgets,
+                    DevicePolicyManager.KEYGUARD_DISABLE_WIDGETS_ALL);
+        }
+
+        // Remove cLock settings item if not installed
         if (!isPackageInstalled("com.cyanogenmod.lockclock")) {
             widgetsCategory.removePreference(findPreference(KEY_LOCK_CLOCK));
+        }
+
+        // Remove maximize widgets on tablets
+        if (!Utils.isPhone(getActivity())) {
+            widgetsCategory.removePreference(
+                    findPreference(Settings.System.LOCKSCREEN_MAXIMIZE_WIDGETS));
         }
 
         mLockscreenBackground = (PreferenceCategory) findPreference(LOCKSCREEN_BACKGROUND);
         mLockBackground = (ListPreference) findPreference(LOCKSCREEN_BACKGROUND_STYLE);
         mWallpaperAlpha = (SeekBarPreference) findPreference(LOCKSCREEN_WALLPAPER_ALPHA);
         mLockColorFill = (ColorPickerPreference) findPreference(LOCKSCREEN_BACKGROUND_COLOR_FILL);
-
-        // Determine which user is logged in
-        mIsPrimary = UserHandle.myUserId() == UserHandle.USER_OWNER;
-        if (mIsPrimary) {
-            // Its the primary user, show all the settings
-            if (!Utils.isPhone(getActivity())) {
-                if (widgetsCategory != null) {
-                    widgetsCategory.removePreference(
-                            findPreference(Settings.System.LOCKSCREEN_MAXIMIZE_WIDGETS));
-                }
-            }
-
-        } else {
-            // Secondary user is logged in, remove all primary user specific preferences
-        }
-
-        // This applies to all users
-        // Enable or disable keyguard widget checkbox based on DPM state
-        mEnableKeyguardWidgets = (CheckBoxPreference) findPreference(KEY_ENABLE_WIDGETS);
-        if (mEnableKeyguardWidgets != null) {
-            if (ActivityManager.isLowRamDeviceStatic()) {
-                // Widgets take a lot of RAM, so disable them on low-memory devices
-                if (widgetsCategory != null) {
-                    widgetsCategory.removePreference(findPreference(KEY_ENABLE_WIDGETS));
-                    mEnableKeyguardWidgets = null;
-                }
-            } else {
-                final boolean disabled = (0 != (mDPM.getKeyguardDisabledFeatures(null)
-                        & DevicePolicyManager.KEYGUARD_DISABLE_WIDGETS_ALL));
-                if (disabled) {
-                    mEnableKeyguardWidgets.setSummary(
-                            R.string.security_enable_widgets_disabled_summary);
-                }
-                mEnableKeyguardWidgets.setEnabled(!disabled);
-            }
-        }
 
         wallpaperImage = new File(getActivity().getFilesDir()+"/lockwallpaper");
         wallpaperTemporary = new File(getActivity().getCacheDir()+"/lockwallpaper.tmp");
@@ -146,9 +131,10 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        final LockPatternUtils lockPatternUtils = mChooseLockSettingsHelper.utils();
+
+        // Update custom widgets
         if (mEnableKeyguardWidgets != null) {
-            mEnableKeyguardWidgets.setChecked(lockPatternUtils.getWidgetsEnabled());
+            mEnableKeyguardWidgets.setChecked(mLockUtils.getWidgetsEnabled());
         }
 
         setListeners();
@@ -189,9 +175,8 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         final String key = preference.getKey();
 
-        final LockPatternUtils lockPatternUtils = mChooseLockSettingsHelper.utils();
         if (KEY_ENABLE_WIDGETS.equals(key)) {
-            lockPatternUtils.setWidgetsEnabled(mEnableKeyguardWidgets.isChecked());
+            mLockUtils.setWidgetsEnabled(mEnableKeyguardWidgets.isChecked());
             return true;
         }
 
@@ -319,6 +304,28 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
         return false;
     }
 
-    public static class DeviceAdminLockscreenReceiver extends DeviceAdminReceiver {}
+    /**
+     * Checks if a specific policy is disabled by a device administrator, and disables the
+     * provided preference if so.
+     * @param preference Preference
+     * @param feature Feature
+     */
+    private void checkDisabledByPolicy(Preference preference, int feature) {
+        boolean disabled = featureIsDisabled(feature);
 
+        if (disabled) {
+            preference.setSummary(R.string.security_enable_widgets_disabled_summary);
+        }
+
+        preference.setEnabled(!disabled);
+    }
+
+    /**
+     * Checks if a specific policy is disabled by a device administrator.
+     * @param feature Feature
+     * @return Is disabled
+     */
+    private boolean featureIsDisabled(int feature) {
+        return (mDPM.getKeyguardDisabledFeatures(null) & feature) != 0;
+    }
 }
