@@ -21,7 +21,7 @@
         android:key="delay_and_timeout"
         android:title="@string/delay_and_timeout_title">
 
-        <com.android.settings.cyanogenmod.SystemSettingCheckBoxPreference
+        <com.android.settings.baked.SystemSettingCheckBoxPreference
             android:key="screen_lock_slide_delay_toggle"
             android:title="@string/slide_lock_delay_title" />
 

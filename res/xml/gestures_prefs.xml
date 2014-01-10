@@ -18,7 +18,7 @@
     <PreferenceCategory android:title="@string/enable_subcat_title" >
 
         <!-- Enable -->
-        <com.android.settings.cyanogenmod.SystemSettingCheckBoxPreference
+        <com.android.settings.baked.SystemSettingCheckBoxPreference
             android:key="enable_stylus_gestures"
             android:summary="@string/enable_spen_summary_head"
             android:title="@string/enable_spen_title_head" />
