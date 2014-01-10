@@ -80,7 +80,6 @@ public class SecuritySettings extends RestrictedSettingsFragment
     private static final int CONFIRM_EXISTING_FOR_BIOMETRIC_WEAK_LIVELINESS_OFF = 125;
 
     // Misc Settings
-    private static final String QUICK_UNLOCK = "quick_unlock";
     private static final String KEY_SIM_LOCK = "sim_lock";
     private static final String KEY_SHOW_PASSWORD = "show_password";
     private static final String KEY_CREDENTIAL_STORAGE_TYPE = "credential_storage_type";
@@ -123,7 +122,6 @@ public class SecuritySettings extends RestrictedSettingsFragment
     private DialogInterface mWarnInstallApps;
     private CheckBoxPreference mToggleVerifyApps;
     private CheckBoxPreference mPowerButtonInstantlyLocks;
-    private CheckBoxPreference mQuickUnlock;
 
 
     private Preference mNotificationAccess;
@@ -326,9 +324,6 @@ public class SecuritySettings extends RestrictedSettingsFragment
         // lock instantly on power key press
         mPowerButtonInstantlyLocks = (CheckBoxPreference) root.findPreference(
                 KEY_POWER_INSTANTLY_LOCKS);
-
-        // bypass having to hit enter for pin or password
-        mQuickUnlock = (CheckBoxPreference) findPreference(QUICK_UNLOCK);
 
         // don't display visible pattern if biometric and backup is not pattern
         if (resid == R.xml.security_settings_biometric_weak &&
@@ -740,10 +735,6 @@ public class SecuritySettings extends RestrictedSettingsFragment
             } else {
                 setNonMarketAppsAllowed(false);
             }
-        } else if (preference == mQuickUnlock) {
-            Settings.System.putInt(getContentResolver(),
-                    Settings.System.LOCKSCREEN_QUICK_UNLOCK_CONTROL,
-                    mQuickUnlock.isChecked() ? 1 : 0);
         } else if (KEY_TOGGLE_VERIFY_APPLICATIONS.equals(key)) {
             Settings.Global.putInt(getContentResolver(), Settings.Global.PACKAGE_VERIFIER_ENABLE,
                     mToggleVerifyApps.isChecked() ? 1 : 0);
