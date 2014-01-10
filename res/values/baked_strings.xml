@@ -261,6 +261,17 @@
     <!-- StatusBar -->
     <string name="status_bar_title">Statusbar</string>
     <string name="status_bar_battery_title">Battery</string>
+    <string name="status_bar_signal_title">Signal</string>
+    <string name="status_bar_panel_title">Systemui</string>
+    <string name="status_bar_misc_title">Misc.</string>
+    <string name="status_bar_signal_text_title">Signal status style</string>
+    <string name="status_bar_signal_style_icon">Icon</string>
+    <string name="status_bar_signal_style_text">Text</string>
+    <string name="status_bar_toggle_brightness">Brightness control</string>
+    <string name="status_bar_toggle_brightness_summary">Adjust brightness by sliding across the status bar</string>
+    <string name="status_bar_toggle_info">Automatic brightness is enabled</string>
+    <string name="status_bar_notif_count_title">Show notification count</string>
+    <string name="status_bar_notif_count_summary">Display the number of pending notifications</string>
     <string name="battery_style_title">Battery icon style</string>
     <string name="battery_status_icon">Icon</string>
     <string name="battery_status_percentage">Percentage</string>
