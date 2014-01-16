@@ -76,6 +76,7 @@ import com.android.settings.bluetooth.BluetoothSettings;
 import com.android.settings.baked.ButtonSettings;
 import com.android.settings.baked.LockscreenInterface;
 import com.android.settings.baked.MoreDeviceSettings;
+import com.android.settings.baked.StatusBar;
 import com.android.settings.baked.SystemUiSettings;
 import com.android.settings.baked.superuser.PolicyNativeFragment;
 import com.android.settings.deviceinfo.Memory;
@@ -366,7 +367,8 @@ public class Settings extends PreferenceActivity
         ButtonSettings.class.getName(),
         MoreDeviceSettings.class.getName(),
         ProfilesSettings.class.getName(),
-        PolicyNativeFragment.class.getName()
+        PolicyNativeFragment.class.getName(),
+        StatusBar.class.getName()
     };
 
     @Override
@@ -1177,7 +1179,7 @@ public class Settings extends PreferenceActivity
     public static class PaymentSettingsActivity extends Settings { /* empty */ }
     public static class PrintSettingsActivity extends Settings { /* empty */ }
     public static class PrintJobSettingsActivity extends Settings { /* empty */ }
-    public static class AnonymousStatsActivity extends Settings { /* empty */ }
+    public static class StatusBarSettingsActivity extends Settings { /* empty */ }
     public static class ApnSettingsActivity extends Settings { /* empty */ }
     public static class ApnEditorActivity extends Settings { /* empty */ }
     public static class BlacklistSettingsActivity extends Settings { /* empty */ }

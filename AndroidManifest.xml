@@ -1770,6 +1770,15 @@
                 android:resource="@id/security_settings" />
         </activity>
 
+        <!-- "StatusBar settings" quick link -->
+        <activity android:name="Settings$StatusBarSettingsActivity"
+                android:label="@string/status_bar_title"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:clearTaskOnLaunch="true">
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.baked.StatusBar" />
+        </activity>
+
         <!-- baked activities End -->
 
         <!-- Pseudo-activity used to provide an intent-filter entry point to encryption settings -->
