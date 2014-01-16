@@ -314,6 +314,11 @@ public class Settings extends PreferenceActivity
         }
     }
 
+    @Override
+    public boolean onIsMultiPane() {
+        return false;
+    }
+
     private static final String[] ENTRY_FRAGMENTS = {
         WirelessSettings.class.getName(),
         WifiSettings.class.getName(),
