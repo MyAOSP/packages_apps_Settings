@@ -90,6 +90,10 @@ public abstract class LocationSettingsBase extends SettingsPreferenceFragment
             }
             return;
         }
+        if (mode != Settings.Secure.LOCATION_MODE_OFF) {
+            Settings.Secure.putInt(getContentResolver(),
+                    Settings.Secure.LOCATION_LAST_MODE, mode);
+        }
         sendModeChangingIntent(getActivity(), mCurrentMode, mode);
         refreshLocationMode();
     }
