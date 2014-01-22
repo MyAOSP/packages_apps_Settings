@@ -59,7 +59,9 @@
         android:icon="@drawable/empty_icon" />
 
     <!-- INTERFACE -->
-    <header android:title="@string/header_category_interface" />
+    <header
+        android:id="@+id/interface_settings"
+        android:title="@string/header_category_interface" />
 
     <!-- Home -->
     <header
@@ -195,10 +197,10 @@
 
     <!-- Privacy Guard -->
     <header
+        android:id="@+id/privacy_guard_settings"
         android:fragment="com.android.settings.privacyguard.PrivacyGuardManager"
         android:icon="@drawable/ic_settings_privacy"
-        android:title="@string/privacy_guard_manager_title"
-        android:id="@+id/privacy_guard_manager" />
+        android:title="@string/privacy_guard_manager_title" />
 
     <!-- Language -->
     <header
