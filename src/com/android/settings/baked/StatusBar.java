@@ -141,6 +141,7 @@ public class StatusBar extends SettingsPreferenceFragment implements
 
         if (Utils.isWifiOnly(getActivity())) {
             mSignalCategory.removePreference(mStatusBarSignal);
+            mPrefs.removePreference(mSignalCategory);
         }
 
         if (Utils.isTablet(getActivity())) {
