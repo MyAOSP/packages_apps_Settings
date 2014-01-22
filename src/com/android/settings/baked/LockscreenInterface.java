@@ -21,6 +21,7 @@ import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -61,6 +62,7 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
     private static final String KEY_ENABLE_WIDGETS = "keyguard_enable_widgets";
     private static final String KEY_LOCK_CLOCK = "lock_clock";
     private static final String KEY_ENABLE_CAMERA = "keyguard_enable_camera";
+    private static final String KEY_BATTERY_STATUS = "lockscreen_battery_status";
     private static final String LOCKSCREEN_BACKGROUND = "lockscreen_background";
     private static final String LOCKSCREEN_BACKGROUND_STYLE = "lockscreen_background_style";
     private static final String LOCKSCREEN_BACKGROUND_COLOR_FILL = "lockscreen_background_color_fill";
@@ -75,6 +77,7 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
     private CheckBoxPreference mEnableCameraWidget;
     private ColorPickerPreference mLockColorFill;
     private ListPreference mLockBackground;
+    private ListPreference mBatteryStatus;
     private LockPatternUtils mLockUtils;
     private SeekBarPreference mWallpaperAlpha;
 
@@ -101,6 +104,7 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
         // Find preferences
         mEnableKeyguardWidgets = (CheckBoxPreference) findPreference(KEY_ENABLE_WIDGETS);
         mEnableCameraWidget = (CheckBoxPreference) findPreference(KEY_ENABLE_CAMERA);
+        mBatteryStatus = (ListPreference) findPreference(KEY_BATTERY_STATUS);
 
         // Remove/disable custom widgets based on device RAM and policy
         if (ActivityManager.isLowRamDeviceStatic()) {
@@ -166,6 +170,7 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
         mLockBackground.setOnPreferenceChangeListener(this);
         mWallpaperAlpha.setOnPreferenceChangeListener(this);
         mLockColorFill.setOnPreferenceChangeListener(this);
+        mBatteryStatus.setOnPreferenceChangeListener(this);
     }
 
     protected void setDefaultValues() {
@@ -181,6 +186,8 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
         mWallpaperAlpha.setInitValue((int) (mWallpaperAlphaTransparency * 100));
         mLockBackground.setValue(Integer.toString(Settings.System.getInt(getContentResolver(),
                 Settings.System.LOCKSCREEN_BACKGROUND_STYLE, 2)));
+         mBatteryStatus.setValue(Integer.toString(Settings.System.getInt(getContentResolver(),
+                    Settings.System.LOCKSCREEN_BATTERY_VISIBILITY, 0)));
     }
 
     protected void updateSummaries() {
@@ -188,6 +195,7 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
         mLockColorFill.setSummary(ColorPickerPreference.convertToARGB(
                 Settings.System.getInt(getContentResolver(),
                 Settings.System.LOCKSCREEN_BACKGROUND_COLOR, 0x00000000)));
+        mBatteryStatus.setSummary(mBatteryStatus.getEntry());
     }
 
     @Override
@@ -222,6 +230,13 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
             int value = ColorPickerPreference.convertToColorInt(hex);
             Settings.System.putInt(getContentResolver(),
                     Settings.System.LOCKSCREEN_BACKGROUND_COLOR, value);
+            return true;
+        } else if (preference == mBatteryStatus) {
+            int value = Integer.valueOf((String) objValue);
+            int index = mBatteryStatus.findIndexOfValue((String) objValue);
+            Settings.System.putInt(getContentResolver(),
+                    Settings.System.LOCKSCREEN_BATTERY_VISIBILITY, value);
+            mBatteryStatus.setSummary(mBatteryStatus.getEntries()[index]);
             return true;
         }
         return false;

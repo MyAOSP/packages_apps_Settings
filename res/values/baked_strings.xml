@@ -253,6 +253,11 @@
     <!-- Lockscreen background -->
     <string name="lockscreen_background">Background</string>
     <string name="lockscreen_background_style_title">Lockscreen background style</string>
+    <!-- Lock screen misc. settings -->
+    <string name="lockscreen_battery_status_title">Battery status</string>
+    <string name="lockscreen_battery_status_charging">Only when charging</string>
+    <string name="lockscreen_battery_status_alwayson">Always on</string>
+    <string name="lockscreen_battery_status_alwaysoff">Always off</string>
 
     <!-- =============
     Interface settings
