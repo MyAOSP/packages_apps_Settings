@@ -1779,6 +1779,8 @@
                 android:value="com.android.settings.baked.StatusBar" />
         </activity>
 
+        <activity android:name=".baked.PrivacySettings" />
+
         <!-- baked activities End -->
 
         <!-- Pseudo-activity used to provide an intent-filter entry point to encryption settings -->
