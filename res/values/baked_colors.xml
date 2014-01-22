@@ -19,4 +19,8 @@
     <color name="battery_red">#FFFF0000</color>
     <color name="white">@color/battery_white</color>
     <color name="transparent">#00000000</color>
+    <!-- Quicksettings tiles -->
+    <color name="qs_default_background_color">#FF1F1F1F</color>
+    <drawable name="qs_tile_background">@color/qs_default_background_color</drawable>
+    <drawable name="qs_tile_background_pressed">#FF303030</drawable>
 </resources>

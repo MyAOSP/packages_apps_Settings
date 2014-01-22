@@ -384,6 +384,35 @@
     <string name="sound_mode_sound">Sound</string>
     <string name="sound_mode_soundVibrate">Sound &amp; Vibrate</string>
     <string name="tiles_reset_message">Restore the default displayed tiles and layout?</string>
+    <string name="tile_text_color_title">Tiles text color</string>
+    <string name="num_columns_port_title">Tiles per row portrait</string>
+    <string name="num_columns_land_title">Tiles per row landscape</string>
+    <!-- array strings for tiles per row -->
+    <string name="one_column">1 column</string>
+    <string name="two_columns">2 columns</string>
+    <string name="three_columns">3 columns</string>
+    <string name="four_columns">4 columns</string>
+    <string name="five_columns">5 columns</string>
+    <string name="six_columns">6 columns</string>
+    <string name="seven_columns">7 columns</string>
+    <!-- Tile background style and color -->
+    <string name="tile_background_style_title">Tile background style</string>
+    <string name="tile_background_color_title">Tile background color</string>
+    <string name="tile_background_random">Random colors</string>
+    <!-- Random colors -->
+    <string name="random_colors_title">Set random colors</string>
+    <string name="random_colors_summary">Press to select your own random colors</string>
+    <string name="color_one">Color one</string>
+    <string name="color_two">Color two</string>
+    <string name="color_three">Color three</string>
+    <string name="color_four">Color four</string>
+    <string name="color_five">Color five</string>
+    <string name="color_six">Color six</string>
+    <!-- Tile animation set -->
+    <string name="qs_anim_set_title">Tile animation</string>
+    <string name="qs_anim_set_off">No animation</string>
+    <string name="qs_anim_set_flip">Flip right on, flip left off</string>
+    <string name="qs_anim_set_bounce">Bounce on, blink off</string>
     <!-- Notification Drawer -->
     <string name="notification_drawer_title">Notification drawer</string>
     <string name="notification_drawer_collapse_on_dismiss_title">Auto close behavior</string>

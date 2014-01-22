@@ -28,6 +28,54 @@
             android:entryValues="@array/quick_pulldown_values"
             android:persistent="false" />
 
+        <ListPreference
+            android:key="num_columns_port"
+            android:entries="@array/num_columns_port_entries"
+            android:entryValues="@array/num_columns_port_values"
+            android:title="@string/num_columns_port_title"
+            android:persistent="false" />
+
+        <ListPreference
+            android:key="num_columns_land"
+            android:entries="@array/num_columns_land_entries"
+            android:entryValues="@array/num_columns_land_values"
+            android:title="@string/num_columns_land_title"
+            android:persistent="false" />
+
+        <ListPreference
+            android:key="qs_anim_set"
+            android:entries="@array/qs_anim_set_entries"
+            android:entryValues="@array/qs_anim_set_values"
+            android:title="@string/qs_anim_set_title"
+            android:persistent="false" />
+
+        <ListPreference
+            android:key="tile_background_style"
+            android:entries="@array/tile_background_style_entries"
+            android:entryValues="@array/tile_background_style_values"
+            android:title="@string/tile_background_style_title" />
+
+        <PreferenceScreen
+            android:key="random_colors"
+            android:fragment="com.android.settings.baked.RandomColors"
+            android:title="@string/random_colors_title"
+            android:summary="@string/random_colors_summary"
+            android:visibility="gone" />
+
+        <ColorPickerPreference
+            android:key="tile_background_color"
+            android:title="@string/tile_background_color_title"
+            android:defaultValue="@color/qs_default_background_color"
+            android:enableDefaultColorPanels="true"
+            android:alphaSlider="true"
+            android:visibility="gone" />
+
+        <ColorPickerPreference
+            android:key="tile_text_color"
+            android:title="@string/tile_text_color_title"
+            android:defaultValue="@color/white"
+            android:enableDefaultColorPanels="true" />
+
         <com.android.settings.baked.SystemSettingCheckBoxPreference
             android:key="qs_collapse_panel"
             android:title="@string/title_collapse_panel"

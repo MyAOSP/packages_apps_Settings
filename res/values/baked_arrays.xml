@@ -340,6 +340,69 @@
         <item>2</item>
     </string-array>
 
+    <!-- QuickSettings animation set for tile when pressed on/off -->
+    <string-array name="qs_anim_set_entries">
+        <item>@string/qs_anim_set_off</item>
+        <item>@string/qs_anim_set_flip</item>
+        <item>@string/qs_anim_set_bounce</item>
+    </string-array>
+
+    <string-array name="qs_anim_set_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <!-- QuickSettings number Columns port/land per row -->
+    <string-array name="num_columns_port_entries">
+        <item>@string/one_column</item>
+        <item>@string/two_columns</item>
+        <item>@string/three_columns</item>
+        <item>@string/four_columns</item>
+        <item>@string/five_columns</item>
+    </string-array>
+
+    <string-array name="num_columns_port_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="num_columns_land_entries">
+        <item>@string/one_column</item>
+        <item>@string/two_columns</item>
+        <item>@string/three_columns</item>
+        <item>@string/four_columns</item>
+        <item>@string/five_columns</item>
+        <item>@string/six_columns</item>
+        <item>@string/seven_columns</item>
+    </string-array>
+
+    <string-array name="num_columns_land_values" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
+
+    <!-- QuickSettings tile background style -->
+    <string-array name="tile_background_style_entries">
+        <item>@string/tile_background_random</item>
+        <item>@string/background_color_fill</item>
+        <item>@string/background_default</item>
+    </string-array>
+
+    <string-array name="tile_background_style_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
 
     <!-- Auto-brightness sensitivity -->
     <string-array name="auto_brightness_sensitivity_entries" translatable="false">

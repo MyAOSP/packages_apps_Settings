@@ -18,13 +18,17 @@ package com.android.settings.quicksettings;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.internal.util.cm.QSConstants;
+import com.android.internal.util.cm.QSUtils;
 import com.android.settings.R;
 import com.android.settings.Utils;
 import com.android.settings.quicksettings.QuickSettingsUtil.TileInfo;
@@ -48,6 +53,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Random;
 
 public class QuickSettingsTiles extends Fragment {
 
@@ -56,9 +62,11 @@ public class QuickSettingsTiles extends Fragment {
     private DraggableGridView mDragView;
     private ViewGroup mContainer;
     private LayoutInflater mInflater;
-    private Resources mSystemUiResources;
+    private static Resources mSystemUiResources;
     private TileAdapter mTileAdapter;
     private boolean mConfigRibbon;
+    private int mTileTextSize = 12;
+    private Context mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,23 +96,15 @@ public class QuickSettingsTiles extends Fragment {
                     FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER_HORIZONTAL);
             mDragView.setLayoutParams(params);
         }
-        int cellHeight = getItemFromSystemUi("quick_settings_cell_height", "dimen");
-        if (cellHeight != 0) {
-            mDragView.setCellHeight(cellHeight);
-        }
         int cellGap = getItemFromSystemUi("quick_settings_cell_gap", "dimen");
         if (cellGap != 0) {
             mDragView.setCellGap(cellGap);
-        }
-        int columnCount = getItemFromSystemUi("quick_settings_num_columns", "integer");
-        if (columnCount != 0) {
-            mDragView.setColumnCount(columnCount);
         }
         mTileAdapter = new TileAdapter(getActivity(), mConfigRibbon);
         return mDragView;
     }
 
-    private int getItemFromSystemUi(String name, String type) {
+    public static int getItemFromSystemUi(String name, String type) {
         if (mSystemUiResources != null) {
             int resId = (int) mSystemUiResources.getIdentifier(name, type, "com.android.systemui");
             if (resId > 0) {
@@ -123,6 +123,7 @@ public class QuickSettingsTiles extends Fragment {
 
     void genTiles() {
         mDragView.removeAllViews();
+        updateTilesPerRow();
         ArrayList<String> tiles = QuickSettingsUtil.getTileListFromString(
                 QuickSettingsUtil.getCurrentTiles(getActivity(), mConfigRibbon));
         for (String tileindex : tiles) {
@@ -147,6 +148,8 @@ public class QuickSettingsTiles extends Fragment {
             tileView = (View) mInflater.inflate(R.layout.quick_settings_tile_generic, null, false);
             final TextView name = (TextView) tileView.findViewById(R.id.tile_textview);
             name.setText(titleId);
+            name.setTextSize(1, mTileTextSize);
+            name.setTextColor(QSUtils.getTileTextColor(mContext));
             name.setCompoundDrawablesRelativeWithIntrinsicBounds(0, iconRegId, 0, 0);
         } else {
             final boolean isUserTile = titleId == QuickSettingsUtil.TILES.get(QSConstants.TILE_USER).getTitleResId();
@@ -161,11 +164,15 @@ public class QuickSettingsTiles extends Fragment {
                             ImageView iv = (ImageView) tileView.findViewById(R.id.user_imageview);
                             TextView tv = (TextView) tileView.findViewById(R.id.tile_textview);
                             tv.setText(titleId);
+                            tv.setTextSize(1, mTileTextSize);
+                            tv.setTextColor(QSUtils.getTileTextColor(mContext));
                             iv.setImageDrawable(d);
                         } else {
                             tileView = (View) mInflater.inflate(R.layout.quick_settings_tile_generic, null, false);
                             final TextView name = (TextView) tileView.findViewById(R.id.tile_textview);
                             name.setText(titleId);
+                            name.setTextSize(1, mTileTextSize);
+                            name.setTextColor(QSUtils.getTileTextColor(mContext));
                             name.setCompoundDrawablesRelativeWithIntrinsicBounds(null, d, null, null);
                         }
                     } catch (Exception e) {
@@ -174,12 +181,14 @@ public class QuickSettingsTiles extends Fragment {
                 }
             }
         }
+        setTileBackground(mContext, tileView);
         mDragView.addView(tileView, newTile ? mDragView.getChildCount() - 1 : mDragView.getChildCount());
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mContext = getActivity().getApplicationContext();
         genTiles();
         mDragView.setOnRearrangeListener(new DraggableGridView.OnRearrangeListener() {
             public void onRearrange(int oldIndex, int newIndex) {
@@ -337,6 +346,83 @@ public class QuickSettingsTiles extends Fragment {
             String usedTiles = QuickSettingsUtil.getCurrentTiles(
                     getContext(), mIsRibbon);
             return !(usedTiles.contains(mTiles[position].tile.getId()));
+        }
+    }
+
+    void updateTileTextSize(int column) {
+        // adjust Tile Text Size based on column count
+        switch (column) {
+            case 7:
+                mTileTextSize = 8;
+                break;
+            case 6:
+                mTileTextSize = 8;
+                break;
+            case 5:
+                mTileTextSize = 9;
+                break;
+            case 4:
+                mTileTextSize = 10;
+                break;
+            case 3:
+            default:
+                mTileTextSize = 12;
+                break;
+            case 2:
+                mTileTextSize = 14;
+                break;
+            case 1:
+                mTileTextSize = 16;
+                break;
+        }
+    }
+
+    private void updateTilesPerRow() {
+        boolean mPortrait = mContext.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT;
+        int columnCount = getItemFromSystemUi("quick_settings_num_columns", "integer");
+        if (mPortrait) {
+            columnCount = QSUtils.getMaxColumns(mContext, Configuration.ORIENTATION_PORTRAIT);
+        } else {
+            columnCount = QSUtils.getMaxColumns(mContext, Configuration.ORIENTATION_LANDSCAPE);
+        }
+        if (columnCount != 0) {
+            mDragView.setColumnCount(columnCount);
+        }
+        updateTileTextSize(columnCount);
+    }
+
+    public static void setTileBackground(Context ctx, View v) {
+        ContentResolver resolver = ctx.getContentResolver();
+        int tileBg = Settings.System.getInt(resolver,
+                Settings.System.QUICK_SETTINGS_BACKGROUND_STYLE, 2);
+        int blue = Settings.System.getInt(resolver,
+                Settings.System.RANDOM_COLOR_ONE, com.android.internal.R.color.holo_blue_dark);
+        int green = Settings.System.getInt(resolver,
+                Settings.System.RANDOM_COLOR_TWO, com.android.internal.R.color.holo_green_dark);
+        int red = Settings.System.getInt(resolver,
+                Settings.System.RANDOM_COLOR_THREE, com.android.internal.R.color.holo_red_dark);
+        int orange = Settings.System.getInt(resolver,
+                Settings.System.RANDOM_COLOR_FOUR, com.android.internal.R.color.holo_orange_dark);
+        int purple = Settings.System.getInt(resolver,
+                Settings.System.RANDOM_COLOR_FIVE, com.android.internal.R.color.holo_purple);
+        int blueBright = Settings.System.getInt(resolver,
+                Settings.System.RANDOM_COLOR_SIX, com.android.internal.R.color.holo_blue_bright);
+        switch (tileBg) {
+            case 0:
+                int[] colors = new int[] {blue, green, red, orange, purple, blueBright};
+                Random generator = new Random();
+                v.setBackgroundColor(colors[generator.nextInt(colors.length)]);
+                break;
+            case 1:
+                int tileBgColor = Settings.System.getInt(resolver,
+                        Settings.System.QUICK_SETTINGS_BACKGROUND_COLOR, 0xFF000000);
+                v.setBackgroundColor(tileBgColor);
+                break;
+            case 2:
+            default:
+                v.setBackgroundResource(R.drawable.qs_tile_background);
+                break;
         }
     }
 }

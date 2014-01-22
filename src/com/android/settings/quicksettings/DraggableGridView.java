@@ -20,12 +20,15 @@ import java.util.Collections;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
@@ -41,6 +44,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.internal.util.cm.QSUtils;
+import com.android.settings.quicksettings.QuickSettingsTiles;
 import com.android.settings.R;
 
 public class DraggableGridView extends ViewGroup implements
@@ -51,7 +56,10 @@ public class DraggableGridView extends ViewGroup implements
         public abstract void onDelete(int index);
     }
 
-    protected int colCount, childWidth, childHeight, cellGap, scroll = 0;
+    protected int colCount = 3;
+    protected int mTileTextSize = 12;
+    private Context mContext;
+    protected int childWidth, childHeight, cellGap, scroll = 0;
     protected float lastDelta = 0;
     protected Handler handler = new Handler();
     protected int dragged = -1, lastX = -1, lastY = -1, lastTarget = -1;
@@ -79,6 +87,7 @@ public class DraggableGridView extends ViewGroup implements
     }
 
     private void init(Context context) {
+        mContext = context;
         setListeners();
         setChildrenDrawingOrderEnabled(true);
         setClipChildren(false);
@@ -88,10 +97,6 @@ public class DraggableGridView extends ViewGroup implements
 
     public void setColumnCount(int count) {
         colCount = count;
-    }
-
-    public void setCellHeight(int height) {
-        childHeight = height;
     }
 
     public void setCellGap(int gap) {
@@ -106,16 +111,18 @@ public class DraggableGridView extends ViewGroup implements
     protected Runnable updateTask = new Runnable() {
         public void run() {
             if (dragged != -1) {
-                if (lastY < cellGap * 3 && scroll > 0)
+                if (lastY < cellGap * 3 && scroll > 0) {
                     scroll -= 20;
-                else if (lastY > getBottom() - getTop() - (cellGap * 3)
-                        && scroll < getMaxScroll())
+                } else if (lastY > getBottom() - getTop() - (cellGap * 3)
+                        && scroll < getMaxScroll()) {
                     scroll += 20;
+                }
             } else if (lastDelta != 0 && !touching) {
                 scroll += lastDelta;
                 lastDelta *= .9;
-                if (Math.abs(lastDelta) < .25)
+                if (Math.abs(lastDelta) < .25) {
                     lastDelta = 0;
+                }
             }
             clampScroll();
             onLayout(true, getLeft(), getTop(), getRight(), getBottom());
@@ -145,6 +152,7 @@ public class DraggableGridView extends ViewGroup implements
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        updateTilesPerRow();
         int N = getChildCount();
         for (int i = 0; i < N; i++) {
             View v = (View) getChildAt(i);
@@ -162,6 +170,7 @@ public class DraggableGridView extends ViewGroup implements
         int availableWidth = (int) (width - getPaddingLeft() - getPaddingRight() -
                 (colCount - 1) * cellGap);
         childWidth = (int) Math.ceil(((float) availableWidth) / colCount);
+        childHeight = childWidth;
 
         // Update each of the children's widths accordingly to the cell width
         int N = getChildCount();
@@ -180,30 +189,35 @@ public class DraggableGridView extends ViewGroup implements
 
     @Override
     protected int getChildDrawingOrder(int childCount, int i) {
-        if (dragged == -1)
+        if (dragged == -1) {
             return i;
-        else if (i == childCount - 1)
+        } else if (i == childCount - 1) {
             return dragged;
-        else if (i >= dragged)
+        } else if (i >= dragged) {
             return i + 1;
+        }
         return i;
     }
 
     public int getIndexFromCoor(int x, int y) {
         int col = getColumnFromCoor(x), row = getRowFromCoor(y + scroll);
-        if (col == -1 || row == -1) // touch is between columns or rows
+        if (col == -1 || row == -1) {
+            // touch is between columns or rows
             return -1;
+        }
         int index = row * colCount + col;
-        if (index >= getChildCount())
+        if (index >= getChildCount()) {
             return -1;
+        }
         return index;
     }
 
     protected int getColumnFromCoor(int coor) {
         coor -= cellGap;
         for (int i = 0; coor > 0; i++) {
-            if (coor < childWidth)
+            if (coor < childWidth) {
                 return i;
+            }
             coor -= (childWidth + cellGap);
         }
         return -1;
@@ -212,32 +226,39 @@ public class DraggableGridView extends ViewGroup implements
     protected int getRowFromCoor(int coor) {
         coor -= cellGap;
         for (int i = 0; coor > 0; i++) {
-            if (coor < childHeight)
+            if (coor < childHeight) {
                 return i;
+            }
             coor -= (childHeight + cellGap);
         }
         return -1;
     }
 
     protected int getTargetFromCoor(int x, int y) {
-        if (getRowFromCoor(y + scroll) == -1) // touch is between rows
+        if (getRowFromCoor(y + scroll) == -1) {
+            // touch is between rows
             return -1;
+        }
 
         int leftPos = getIndexFromCoor(x - (childWidth / 4), y);
         int rightPos = getIndexFromCoor(x + (childWidth / 4), y);
-        if (leftPos == -1 && rightPos == -1) // touch is in the middle of
-                                             // nowhere
+        if (leftPos == -1 && rightPos == -1) {
+            // touch is in the middle of nowhere
             return -1;
-        if (leftPos == rightPos) // touch is in the middle of a visual
+        }
+        if (leftPos == rightPos) {
+            // touch is in the middle of a visual
             return -1;
-
+        }
         int target = -1;
-        if (rightPos > -1)
+        if (rightPos > -1) {
             target = rightPos;
-        else if (leftPos > -1)
+        } else if (leftPos > -1) {
             target = leftPos + 1;
-        if (dragged < target)
+        }
+        if (dragged < target) {
             return target - 1;
+        }
 
         return target;
     }
@@ -250,21 +271,25 @@ public class DraggableGridView extends ViewGroup implements
     }
 
     public int getIndexOf(View child) {
-        for (int i = 0; i < getChildCount(); i++)
-            if (getChildAt(i) == child)
+        for (int i = 0; i < getChildCount(); i++) {
+            if (getChildAt(i) == child) {
                 return i;
+            }
+        }
         return -1;
     }
 
     // EVENT HANDLERS
     public void onClick(View view) {
         if (enabled) {
-            if (secondaryOnClickListener != null)
+            if (secondaryOnClickListener != null) {
                 secondaryOnClickListener.onClick(view);
-            if (onItemClickListener != null)
+            }
+            if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(null,
                         getChildAt(getLastIndex()), getLastIndex(),
                         getLastIndex() / colCount);
+            }
         }
     }
 
@@ -278,11 +303,14 @@ public class DraggableGridView extends ViewGroup implements
         TextView addDeleteTile = ((TextView) getChildAt(getChildCount() - 1).findViewById(R.id.tile_textview));
         addDeleteTile.setCompoundDrawablesRelativeWithIntrinsicBounds(0, resid, 0, 0);
         addDeleteTile.setText(stringid);
+        addDeleteTile.setTextSize(1, mTileTextSize);
+        addDeleteTile.setTextColor(QSUtils.getTileTextColor(mContext));
     }
 
     public boolean onLongClick(View view) {
-        if (!enabled)
+        if (!enabled) {
             return false;
+        }
         int index = getLastIndex();
         if (index != -1 && index != getChildCount() - 1) {
             toggleAddDelete(true);
@@ -320,7 +348,7 @@ public class DraggableGridView extends ViewGroup implements
                     break;
                 } else {
                     isDelete = false;
-                    getChildAt(dragged).setBackgroundColor(Color.parseColor("#AA222222"));
+                    getChildAt(dragged).setBackgroundColor(Color.GRAY);
                 }
                 if (lastTarget != target && target != getChildCount() - 1) {
                     if (target != -1) {
@@ -331,8 +359,9 @@ public class DraggableGridView extends ViewGroup implements
             } else {
                 scroll += delta;
                 clampScroll();
-                if (Math.abs(delta) > 4)
+                if (Math.abs(delta) > 4) {
                     enabled = false;
+                }
                 onLayout(true, getLeft(), getTop(), getRight(), getBottom());
             }
             lastX = (int) event.getX();
@@ -343,15 +372,17 @@ public class DraggableGridView extends ViewGroup implements
             if (dragged != -1) {
                 toggleAddDelete(false);
                 View v = getChildAt(dragged);
-                if (lastTarget != -1 && !isDelete)
+                QuickSettingsTiles.setTileBackground(mContext, v);
+                if (lastTarget != -1 && !isDelete) {
                     reorderChildren(true);
-                else {
+                } else {
                     Point xy = getCoorFromIndex(dragged);
                     v.layout(xy.x, xy.y, xy.x + childWidth, xy.y + childHeight);
                 }
                 v.clearAnimation();
-                if (v instanceof ImageView)
+                if (v instanceof ImageView) {
                     ((ImageView) v).setAlpha(255);
+                }
                 if (isDelete) {
                     lastTarget = dragged;
                     removeViewAt(dragged);
@@ -367,8 +398,9 @@ public class DraggableGridView extends ViewGroup implements
             isDelete = false;
             break;
         }
-        if (dragged != -1)
+        if (dragged != -1) {
             return true;
+        }
         return false;
     }
 
@@ -398,20 +430,24 @@ public class DraggableGridView extends ViewGroup implements
     protected void animateGap(int target) {
         for (int i = 0; i < getChildCount(); i++) {
             View v = getChildAt(i);
-            if (i == dragged)
+            if (i == dragged) {
                 continue;
+            }
             int newPos = i;
-            if (dragged < target && i >= dragged + 1 && i <= target)
+            if (dragged < target && i >= dragged + 1 && i <= target) {
                 newPos--;
-            else if (target < dragged && i >= target && i < dragged)
+            } else if (target < dragged && i >= target && i < dragged) {
                 newPos++;
+            }
 
             // animate
             int oldPos = i;
-            if (newPositions.get(i) != -1)
+            if (newPositions.get(i) != -1) {
                 oldPos = newPositions.get(i);
-            if (oldPos == newPos)
+            }
+            if (oldPos == newPos) {
                 continue;
+            }
 
             Point oldXY = getCoorFromIndex(oldPos);
             Point newXY = getCoorFromIndex(newPos);
@@ -435,29 +471,31 @@ public class DraggableGridView extends ViewGroup implements
     }
 
     protected void reorderChildren(boolean notify) {
-        if (onRearrangeListener != null && notify)
+        if (onRearrangeListener != null && notify) {
             onRearrangeListener.onRearrange(dragged, lastTarget);
+        }
         ArrayList<View> children = new ArrayList<View>();
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).clearAnimation();
             children.add(getChildAt(i));
         }
         removeAllViews();
-        while (dragged != lastTarget)
-            if (lastTarget == children.size()) // dragged and dropped to the
-                                               // right of the last element
-            {
+        while (dragged != lastTarget) {
+            // dragged and dropped to the right of the last element
+            if (lastTarget == children.size()) {
                 children.add(children.remove(dragged));
                 dragged = lastTarget;
-            } else if (dragged < lastTarget) // shift to the right
-            {
+            // shift to the right
+            } else if (dragged < lastTarget) {
                 Collections.swap(children, dragged, dragged + 1);
                 dragged++;
-            } else if (dragged > lastTarget) // shift to the left
-            {
+            // shift to the left
+            } else if (dragged > lastTarget) {
                 Collections.swap(children, dragged, dragged - 1);
                 dragged--;
             }
+        }
+
         for (int i = 0; i < children.size(); i++) {
             newPositions.set(i, -1);
             addView(children.get(i));
@@ -492,6 +530,47 @@ public class DraggableGridView extends ViewGroup implements
                 lastDelta = 0;
             }
         }
+    }
+
+    void updateTileTextSize(int column) {
+        // adjust Tile Text Size based on column count
+        switch (column) {
+            case 7:
+                mTileTextSize = 8;
+                break;
+            case 6:
+                mTileTextSize = 8;
+                break;
+            case 5:
+                mTileTextSize = 9;
+                break;
+            case 4:
+                mTileTextSize = 10;
+                break;
+            case 3:
+            default:
+                mTileTextSize = 12;
+                break;
+            case 2:
+                mTileTextSize = 14;
+                break;
+            case 1:
+                mTileTextSize = 16;
+                break;
+        }
+    }
+
+    private void updateTilesPerRow() {
+        boolean mPortrait = mContext.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT;
+        int columnCount = QuickSettingsTiles.getItemFromSystemUi(
+                "quick_settings_num_columns", "integer");
+        if (mPortrait) {
+            columnCount = QSUtils.getMaxColumns(mContext, Configuration.ORIENTATION_PORTRAIT);
+        } else {
+            columnCount = QSUtils.getMaxColumns(mContext, Configuration.ORIENTATION_LANDSCAPE);
+        }
+        updateTileTextSize(columnCount);
     }
 
     protected int getMaxScroll() {

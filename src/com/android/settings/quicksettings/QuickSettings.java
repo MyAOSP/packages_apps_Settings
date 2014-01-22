@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.preference.ColorPickerPreference;
 import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
@@ -54,11 +55,25 @@ public class QuickSettings extends SettingsPreferenceFragment implements
     private static final String GENERAL_SETTINGS = "pref_general_settings";
     private static final String STATIC_TILES = "static_tiles";
     private static final String DYNAMIC_TILES = "pref_dynamic_tiles";
+    private static final String NUM_COLUMNS_PORT = "num_columns_port";
+    private static final String NUM_COLUMNS_LAND = "num_columns_land";
+    private static final String TILE_BACKGROUND_STYLE = "tile_background_style";
+    private static final String TILE_BACKGROUND_COLOR = "tile_background_color";
+    private static final String RANDOM_COLORS = "random_colors";
+    private static final String TILE_TEXT_COLOR = "tile_text_color";
+    private static final String QS_ANIM_SET = "qs_anim_set";
 
-    private MultiSelectListPreference mRingMode;
+    private ColorPickerPreference mTileTextColor;
+    private ColorPickerPreference mTileBgColor;
+    private ListPreference mNumColumnsPort;
+    private ListPreference mNumColumnsLand;
     private ListPreference mNetworkMode;
     private ListPreference mScreenTimeoutMode;
     private ListPreference mQuickPulldown;
+    private ListPreference mTileBgStyle;
+    private ListPreference mAnimSet;
+    private MultiSelectListPreference mRingMode;
+    private PreferenceScreen mRandomColors;
     private PreferenceCategory mGeneralSettings;
     private PreferenceCategory mStaticTiles;
     private PreferenceCategory mDynamicTiles;
@@ -79,50 +94,29 @@ public class QuickSettings extends SettingsPreferenceFragment implements
         mStaticTiles = (PreferenceCategory) prefSet.findPreference(STATIC_TILES);
         mDynamicTiles = (PreferenceCategory) prefSet.findPreference(DYNAMIC_TILES);
         mQuickPulldown = (ListPreference) prefSet.findPreference(QUICK_PULLDOWN);
+        mAnimSet = (ListPreference) prefSet.findPreference(QS_ANIM_SET);
 
         if (!Utils.isPhone(getActivity())) {
             if (mQuickPulldown != null) {
                 mGeneralSettings.removePreference(mQuickPulldown);
             }
-        } else {
-            mQuickPulldown.setOnPreferenceChangeListener(this);
-            int quickPulldownValue = Settings.System.getInt(resolver,
-                    Settings.System.QS_QUICK_PULLDOWN, 0);
-            mQuickPulldown.setValue(String.valueOf(quickPulldownValue));
-            updatePulldownSummary(quickPulldownValue);
         }
 
+        mTileTextColor = (ColorPickerPreference) findPreference(TILE_TEXT_COLOR);
+        mNumColumnsPort = (ListPreference) prefSet.findPreference(NUM_COLUMNS_PORT);
+        mNumColumnsLand = (ListPreference) prefSet.findPreference(NUM_COLUMNS_LAND);
+        mTileBgStyle = (ListPreference) findPreference(TILE_BACKGROUND_STYLE);
+        mTileBgColor = (ColorPickerPreference) findPreference(TILE_BACKGROUND_COLOR);
+        mRandomColors = (PreferenceScreen) findPreference(RANDOM_COLORS);
         // Add the sound mode
         mRingMode = (MultiSelectListPreference) prefSet.findPreference(EXP_RING_MODE);
-
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        if (vibrator.hasVibrator()) {
-            String storedRingMode = Settings.System.getString(resolver,
-                    Settings.System.EXPANDED_RING_MODE);
-            if (storedRingMode != null) {
-                String[] ringModeArray = TextUtils.split(storedRingMode, SEPARATOR);
-                mRingMode.setValues(new HashSet<String>(Arrays.asList(ringModeArray)));
-                updateSummary(storedRingMode, mRingMode, R.string.pref_ring_mode_summary);
-            }
-            mRingMode.setOnPreferenceChangeListener(this);
-        } else {
-            mStaticTiles.removePreference(mRingMode);
-        }
-
         // Add the network mode preference
         mNetworkMode = (ListPreference) prefSet.findPreference(EXP_NETWORK_MODE);
-        if (mNetworkMode != null) {
-            mNetworkMode.setSummary(mNetworkMode.getEntry());
-            mNetworkMode.setOnPreferenceChangeListener(this);
-        }
-
         // Screen timeout mode
         mScreenTimeoutMode = (ListPreference) prefSet.findPreference(EXP_SCREENTIMEOUT_MODE);
-        mScreenTimeoutMode.setSummary(mScreenTimeoutMode.getEntry());
-        mScreenTimeoutMode.setOnPreferenceChangeListener(this);
 
         // Remove unsupported options
-/*        if (!QSUtils.deviceSupportsDockBattery(getActivity())) {
+        /* if (!QSUtils.deviceSupportsDockBattery(getActivity())) {
             Preference pref = findPreference(Settings.System.QS_DYNAMIC_DOCK_BATTERY);
             if (pref != null) {
                 mDynamicTiles.removePreference(pref);
@@ -148,6 +142,76 @@ public class QuickSettings extends SettingsPreferenceFragment implements
         }
     }
 
+    private void registerListeners() {
+        if (Utils.isPhone(getActivity())) {
+            mQuickPulldown.setOnPreferenceChangeListener(this);
+        }
+        mTileTextColor.setOnPreferenceChangeListener(this);
+        mNumColumnsPort.setOnPreferenceChangeListener(this);
+        mNumColumnsLand.setOnPreferenceChangeListener(this);
+        mRingMode.setOnPreferenceChangeListener(this);
+        mScreenTimeoutMode.setOnPreferenceChangeListener(this);
+        if (mNetworkMode != null) {
+            mNetworkMode.setOnPreferenceChangeListener(this);
+        }
+        mTileBgStyle.setOnPreferenceChangeListener(this);
+        mTileBgColor.setOnPreferenceChangeListener(this);
+        mAnimSet.setOnPreferenceChangeListener(this);
+    }
+
+    private void setDefaultValues() {
+        ContentResolver resolver = getContentResolver();
+        mQuickPulldown.setValue(Integer.toString(Settings.System.getInt(
+                resolver, Settings.System.QS_QUICK_PULLDOWN, 0)));
+        mNumColumnsPort.setValue(Integer.toString(Settings.System.getInt(resolver,
+                Settings.System.QUICK_SETTINGS_NUM_COLUMNS_PORT, 3)));
+        mNumColumnsLand.setValue(Integer.toString(Settings.System.getInt(resolver,
+                Settings.System.QUICK_SETTINGS_NUM_COLUMNS_LAND, 5)));
+        mTileBgStyle.setValue(Integer.toString(Settings.System.getInt(resolver,
+                Settings.System.QUICK_SETTINGS_BACKGROUND_STYLE, 2)));
+        mScreenTimeoutMode.setValue(Integer.toString(Settings.System.getInt(resolver,
+                Settings.System.EXPANDED_SCREENTIMEOUT_MODE, 1)));
+        mNetworkMode.setValue(Integer.toString(Settings.System.getInt(resolver,
+                Settings.System.EXPANDED_NETWORK_MODE, 0)));
+        mAnimSet.setValue(Integer.toString(Settings.System.getInt(resolver,
+                Settings.System.QS_ANIMATION_SET, 0)));
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator.hasVibrator()) {
+            String storedRingMode = Settings.System.getString(resolver,
+                    Settings.System.EXPANDED_RING_MODE);
+            if (storedRingMode != null) {
+                String[] ringModeArray = TextUtils.split(storedRingMode, SEPARATOR);
+                mRingMode.setValues(new HashSet<String>(Arrays.asList(ringModeArray)));
+            }
+        }
+    }
+
+    private void updateSummaries() {
+        ContentResolver resolver = getContentResolver();
+        updatePulldownSummary(Settings.System.getInt(
+                resolver, Settings.System.QS_QUICK_PULLDOWN, 0));
+        mNumColumnsPort.setSummary(mNumColumnsPort.getEntry());
+        mNumColumnsLand.setSummary(mNumColumnsLand.getEntry());
+        mTileBgStyle.setSummary(mTileBgStyle.getEntry());
+        mScreenTimeoutMode.setSummary(mScreenTimeoutMode.getEntry());
+        mTileBgColor.setSummary(ColorPickerPreference.convertToARGB(Settings.System.getInt(
+                resolver, Settings.System.QUICK_SETTINGS_BACKGROUND_COLOR, 0xFF1F1F1F)));
+        mTileTextColor.setSummary(ColorPickerPreference.convertToARGB(Settings.System.getInt(
+                resolver, Settings.System.QUICK_SETTINGS_TEXT_COLOR, 0xFFFFFFFF)));
+        if (mNetworkMode != null) {
+            mNetworkMode.setSummary(mNetworkMode.getEntry());
+        }
+        mAnimSet.setSummary(mAnimSet.getEntry());
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator.hasVibrator()) {
+            String storedRingMode = Settings.System.getString(resolver,
+                    Settings.System.EXPANDED_RING_MODE);
+            if (storedRingMode != null) {
+                updateSummary(storedRingMode, mRingMode, R.string.pref_ring_mode_summary);
+            }
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -160,6 +224,10 @@ public class QuickSettings extends SettingsPreferenceFragment implements
                 mStaticTiles.removePreference(mNetworkMode);
             }
         }
+        registerListeners();
+        setDefaultValues();
+        updateSummaries();
+        updateVisibility();
     }
 
     private class MultiSelectListPreferenceComparator implements Comparator<String> {
@@ -203,8 +271,75 @@ public class QuickSettings extends SettingsPreferenceFragment implements
             Settings.System.putInt(resolver, Settings.System.EXPANDED_SCREENTIMEOUT_MODE, value);
             mScreenTimeoutMode.setSummary(mScreenTimeoutMode.getEntries()[index]);
             return true;
+        } else if (preference == mNumColumnsPort) {
+            int value = Integer.parseInt((String) newValue);
+            int index = mNumColumnsPort.findIndexOfValue((String) newValue);
+            Settings.System.putInt(resolver,
+                    Settings.System.QUICK_SETTINGS_NUM_COLUMNS_PORT, value);
+            preference.setSummary(mNumColumnsPort.getEntries()[index]);
+            return true;
+        } else if (preference == mNumColumnsLand) {
+            int value = Integer.parseInt((String) newValue);
+            int index = mNumColumnsLand.findIndexOfValue((String) newValue);
+            Settings.System.putInt(resolver,
+                    Settings.System.QUICK_SETTINGS_NUM_COLUMNS_LAND, value);
+            preference.setSummary(mNumColumnsLand.getEntries()[index]);
+            return true;
+        } else if (preference == mTileTextColor) {
+            String hex = ColorPickerPreference.convertToARGB(
+                    Integer.valueOf(String.valueOf(newValue)));
+            preference.setSummary(hex);
+            int value = ColorPickerPreference.convertToColorInt(hex);
+            Settings.System.putInt(resolver,
+                    Settings.System.QUICK_SETTINGS_TEXT_COLOR, value);
+            return true;
+        } else if (preference == mTileBgColor) {
+            String hex = ColorPickerPreference.convertToARGB(
+                    Integer.valueOf(String.valueOf(newValue)));
+            preference.setSummary(hex);
+            int value = ColorPickerPreference.convertToColorInt(hex);
+            Settings.System.putInt(resolver,
+                    Settings.System.QUICK_SETTINGS_BACKGROUND_COLOR, value);
+            return true;
+        } else if (preference == mTileBgStyle) {
+            int value = Integer.valueOf((String) newValue);
+            int index = mTileBgStyle.findIndexOfValue((String) newValue);
+            Settings.System.putInt(resolver,
+                    Settings.System.QUICK_SETTINGS_BACKGROUND_STYLE, value);
+            preference.setSummary(mTileBgStyle.getEntries()[index]);
+            updateVisibility();
+            return true;
+        } else if (preference == mAnimSet) {
+            int value = Integer.valueOf((String) newValue);
+            int index = mAnimSet.findIndexOfValue((String) newValue);
+            Settings.System.putInt(resolver,
+                    Settings.System.QS_ANIMATION_SET, value);
+            preference.setSummary(mAnimSet.getEntries()[index]);
+            updateVisibility();
+            return true;
         }
         return false;
+    }
+
+    private void updateVisibility() {
+        ContentResolver resolver = getContentResolver();
+        int visible = Settings.System.getInt(resolver,
+                    Settings.System.QUICK_SETTINGS_BACKGROUND_STYLE, 2);
+        switch (visible) {
+            case 2:
+            default:
+                mGeneralSettings.removePreference(mRandomColors);
+                mGeneralSettings.removePreference(mTileBgColor);
+                break;
+            case 1:
+                mGeneralSettings.removePreference(mRandomColors);
+                mGeneralSettings.addPreference(mTileBgColor);
+                break;
+            case 0:
+                mGeneralSettings.addPreference(mRandomColors);
+                mGeneralSettings.removePreference(mTileBgColor);
+                break;
+        }
     }
 
     private void updateSummary(String val, MultiSelectListPreference pref, int defSummary) {
