@@ -243,6 +243,7 @@
     <string name="lockscreen_widgets_category_title">Widgets</string>
     <string name="lockscreen_maximize_widgets_title">Maximize widgets</string>
     <string name="lockscreen_maximize_widgets_summary">Expand widgets when the screen is turned on</string>
+    <string name="lockscreen_enable_camera_title">Camera widget</string>
     <!-- Custom widgets -->
     <string name="lockscreen_custom_widgets_title">Custom widgets</string>
     <!-- Quick unlock -->

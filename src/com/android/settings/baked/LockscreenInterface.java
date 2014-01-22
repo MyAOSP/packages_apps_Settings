@@ -22,9 +22,11 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.UserHandle;
@@ -58,6 +60,7 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
     private static final String LOCKSCREEN_WIDGETS_CATEGORY = "lockscreen_widgets_category";
     private static final String KEY_ENABLE_WIDGETS = "keyguard_enable_widgets";
     private static final String KEY_LOCK_CLOCK = "lock_clock";
+    private static final String KEY_ENABLE_CAMERA = "keyguard_enable_camera";
     private static final String LOCKSCREEN_BACKGROUND = "lockscreen_background";
     private static final String LOCKSCREEN_BACKGROUND_STYLE = "lockscreen_background_style";
     private static final String LOCKSCREEN_BACKGROUND_COLOR_FILL = "lockscreen_background_color_fill";
@@ -69,6 +72,7 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
     private static final int DEFAULT = 2;
 
     private CheckBoxPreference mEnableKeyguardWidgets;
+    private CheckBoxPreference mEnableCameraWidget;
     private ColorPickerPreference mLockColorFill;
     private ListPreference mLockBackground;
     private LockPatternUtils mLockUtils;
@@ -96,6 +100,7 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
 
         // Find preferences
         mEnableKeyguardWidgets = (CheckBoxPreference) findPreference(KEY_ENABLE_WIDGETS);
+        mEnableCameraWidget = (CheckBoxPreference) findPreference(KEY_ENABLE_CAMERA);
 
         // Remove/disable custom widgets based on device RAM and policy
         if (ActivityManager.isLowRamDeviceStatic()) {
@@ -106,6 +111,16 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
             // Secondary user is logged in, remove all primary user specific preferences
             checkDisabledByPolicy(mEnableKeyguardWidgets,
                     DevicePolicyManager.KEYGUARD_DISABLE_WIDGETS_ALL);
+        }
+
+        // Enable or disable camera widget based on device and policy
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) ||
+                Camera.getNumberOfCameras() == 0) {
+            widgetsCategory.removePreference(mEnableCameraWidget);
+            mEnableCameraWidget = null;
+        } else {
+            checkDisabledByPolicy(mEnableCameraWidget,
+                    DevicePolicyManager.KEYGUARD_DISABLE_SECURE_CAMERA);
         }
 
         // Remove cLock settings item if not installed
@@ -132,9 +147,13 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
     public void onResume() {
         super.onResume();
 
-        // Update custom widgets
+        // Update custom widgets and camera
         if (mEnableKeyguardWidgets != null) {
             mEnableKeyguardWidgets.setChecked(mLockUtils.getWidgetsEnabled());
+        }
+
+        if (mEnableCameraWidget != null) {
+            mEnableCameraWidget.setChecked(mLockUtils.getCameraEnabled());
         }
 
         setListeners();
@@ -177,6 +196,9 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
 
         if (KEY_ENABLE_WIDGETS.equals(key)) {
             mLockUtils.setWidgetsEnabled(mEnableKeyguardWidgets.isChecked());
+            return true;
+        } else if (KEY_ENABLE_CAMERA.equals(key)) {
+            mLockUtils.setCameraEnabled(mEnableCameraWidget.isChecked());
             return true;
         }
 
