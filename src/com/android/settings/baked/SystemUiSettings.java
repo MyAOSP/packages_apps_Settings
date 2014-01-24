@@ -61,7 +61,7 @@ public class SystemUiSettings extends SettingsPreferenceFragment  implements
                 (CheckBoxPreference) findPreference(KEY_EXPANDED_DESKTOP_NO_NAVBAR);
 
         Utils.updatePreferenceToSpecificActivityFromMetaDataOrRemove(getActivity(),
-                getPreferenceScreen(), KEY_SCREEN_GESTURE_SETTINGS);
+                prefStatusBar, KEY_SCREEN_GESTURE_SETTINGS);
 
         int expandedDesktopValue = Settings.System.getInt(getContentResolver(),
                 Settings.System.EXPANDED_DESKTOP_STYLE, 0);
