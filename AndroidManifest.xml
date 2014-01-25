@@ -1780,6 +1780,15 @@
                 android:value="com.android.settings.baked.StatusBar" />
         </activity>
 
+        <!-- "PerformanceSettings" quick link -->
+        <activity android:name="Settings$PerformanceSettingsActivity"
+                android:label="@string/performance_settings_title"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:clearTaskOnLaunch="true">
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.baked.PerformanceSettings" />
+        </activity>
+
         <activity android:name=".baked.PrivacySettings" />
 
         <!-- baked activities End -->
