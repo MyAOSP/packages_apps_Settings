@@ -73,7 +73,7 @@
             android:title="@string/double_tap_to_wake_title"
             android:defaultValue="false" />
 
-        <com.android.settings.cyanogenmod.SystemSettingCheckBoxPreference
+        <com.android.settings.baked.SystemSettingCheckBoxPreference
             android:key="screen_off_animation"
             android:title="@string/screen_animation_off_title"
             android:defaultValue="true" />
