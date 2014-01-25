@@ -666,6 +666,11 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
     <string name="wake_when_plugged_or_unplugged_summary">Turn the screen on when connecting or disconnecting the charger</string>
     <!-- tap-to-wake -->
     <string name="double_tap_to_wake_title">Double-tap to wake</string>
+    <!-- Lights settings screen, screen animation options -->
+    <string name="screen_animation_off_title">Screen-off animation</string>
+    <string name="screen_animation_style_title">Animation style</string>
+    <string name="screen_animation_style_electronbeam">Electron beam</string>
+    <string name="screen_animation_style_fade">Fade out</string>
 
     <!-- ==========
     Button settings
