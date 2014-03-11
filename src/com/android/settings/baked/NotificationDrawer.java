@@ -208,16 +208,6 @@ public class NotificationDrawer extends SettingsPreferenceFragment implements
             Settings.System.putInt(getContentResolver(),
                     Settings.System.PANEL_BACKGROUND_STYLE, 2);
             // Launches intent for user to select an image/crop it to set as background
-            final Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
-            intent.setType("image/*");
-            intent.putExtra("crop", "true");
-            intent.putExtra("scale", true);
-            intent.putExtra("scaleUpIfNeeded", false);
-            intent.putExtra("scaleType", 6);
-            intent.putExtra("layout_width", -1);
-            intent.putExtra("layout_height", -2);
-            intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
-
             final Display display = getActivity().getWindowManager().getDefaultDisplay();
             final Rect rect = new Rect();
             final Window window = getActivity().getWindow();
@@ -232,7 +222,19 @@ public class NotificationDrawer extends SettingsPreferenceFragment implements
 
             int width = display.getWidth();
             int height = display.getHeight() - titleBarHeight;
-
+            final Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+            intent.setType("image/*");
+            intent.putExtra("crop", "true");
+            intent.putExtra("scale", true);
+            intent.putExtra("scaleUpIfNeeded", false);
+            if (Utils.isTablet(getActivity())) {
+                width = display.getWidth() / width;
+                height = width;
+                intent.putExtra("scaleType", 3);
+            } else {
+                intent.putExtra("scaleType", 6);
+            }
+            intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
             intent.putExtra("aspectX", isPortrait ? width : height);
             intent.putExtra("aspectY", isPortrait ? height : width);
 
