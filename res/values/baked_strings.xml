@@ -980,6 +980,12 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
     <!-- Stylus gestures -->
     <string name="stylus_app_not_installed">%s is not installed</string>
 
+    <!-- Data Usage -->
+    <!-- Subtitle of dialog for editing data usage cycle reset date. [CHAR LIMIT=32] -->
+    <string name="data_usage_cycle_editor_subtitle_cm">Date of each cycle:</string>
+    <!-- Subtitle of dialog for editing data usage cycle length. [CHAR LIMIT=32] -->
+    <string name="data_usage_lengths_spinner_subtitle">Cycle length:</string>
+
     <!-- Privacy Settings Header item -->
     <string name="privacy_guard_settings_title">Privacy</string>
 </resources>
