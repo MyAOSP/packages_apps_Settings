@@ -78,6 +78,7 @@ import com.android.settings.baked.ButtonSettings;
 import com.android.settings.baked.LockscreenInterface;
 import com.android.settings.baked.MoreDeviceSettings;
 import com.android.settings.baked.PerformanceSettings;
+import com.android.settings.baked.QuietHours;
 import com.android.settings.baked.StatusBar;
 import com.android.settings.baked.SystemUiSettings;
 import com.android.settings.baked.superuser.PolicyNativeFragment;
@@ -381,7 +382,8 @@ public class Settings extends PreferenceActivity
         ProfilesSettings.class.getName(),
         PolicyNativeFragment.class.getName(),
         StatusBar.class.getName(),
-        PerformanceSettings.class.getName()
+        PerformanceSettings.class.getName(),
+        QuietHours.class.getName()
     };
 
     @Override
@@ -1202,4 +1204,5 @@ public class Settings extends PreferenceActivity
     public static class BlacklistSettingsActivity extends Settings { /* empty */ }
     public static class SystemSettingsActivity extends Settings { /* empty */ }
     public static class PerformanceSettingsActivity extends Settings { /* empty */ }
+    public static class QuietHoursSettingsActivity extends Settings { /* empty */ }
 }

@@ -1852,6 +1852,20 @@
 
         <activity android:name=".baked.PrivacySettings" />
 
+        <activity android:name="Settings$QuietHoursSettingsActivity"
+                  android:label="@string/quiet_hours_title"
+                  android:taskAffinity=""
+                  android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                       android:value="com.android.settings.baked.QuietHours" />
+            <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
+                       android:resource="@id/sound_settings" />
+        </activity>
+
         <!-- baked activities End -->
 
         <!-- Pseudo-activity used to provide an intent-filter entry point to encryption settings -->
