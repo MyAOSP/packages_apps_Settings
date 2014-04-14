@@ -82,6 +82,7 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
     private SeekBarPreference mWallpaperAlpha;
 
     private ChooseLockSettingsHelper mChooseLockSettingsHelper;
+    private LockPatternUtils mLockUtils;
     private DevicePolicyManager mDPM;
     private PreferenceCategory mLockscreenBackground;
 
@@ -118,11 +119,11 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
         }
 
         // Enable or disable camera widget based on device and policy
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) ||
-                Camera.getNumberOfCameras() == 0) {
+        if (Camera.getNumberOfCameras() == 0) {
             widgetsCategory.removePreference(mEnableCameraWidget);
             mEnableCameraWidget = null;
-        } else {
+            mLockUtils.setCameraEnabled(false);
+        } else if (mLockUtils.isSecure()) {
             checkDisabledByPolicy(mEnableCameraWidget,
                     DevicePolicyManager.KEYGUARD_DISABLE_SECURE_CAMERA);
         }
