@@ -41,7 +41,7 @@ import android.widget.Switch;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.settings.Utils;
-import com.android.settings.cyanogenmod.ShortcutPickHelper;
+import com.android.settings.baked.ShortcutPickHelper;
 
 public class VoiceWakeupSettings extends SettingsPreferenceFragment
         implements OnPreferenceChangeListener, ShortcutPickHelper.OnPickListener {
