@@ -78,7 +78,6 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
     private ColorPickerPreference mLockColorFill;
     private ListPreference mLockBackground;
     private ListPreference mBatteryStatus;
-    private LockPatternUtils mLockUtils;
     private SeekBarPreference mWallpaperAlpha;
 
     private ChooseLockSettingsHelper mChooseLockSettingsHelper;
