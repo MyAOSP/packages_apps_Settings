@@ -85,7 +85,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="lockscreen_background"
+        android:key="lockscreen_background_category"
         android:title="@string/lockscreen_background">
 
         <ListPreference
@@ -95,18 +95,6 @@
             android:title="@string/lockscreen_background_style_title"
             android:entries="@array/lockscreen_background_entries"
             android:entryValues="@array/lockscreen_background_values" />
-
-        <ColorPickerPreference
-            android:key="lockscreen_background_color_fill"
-            android:title="@string/background_color_fill_title"
-            android:defaultValue="@color/transparent"
-            android:inputEnabled="true"
-            android:alphaSlider="true" />
-
-        <com.android.settings.baked.SeekBarPreference
-            android:key="lockscreen_wallpaper_alpha"
-            android:title="@string/transparency"
-            android:defaultValue="100" />
 
     </PreferenceCategory>
 

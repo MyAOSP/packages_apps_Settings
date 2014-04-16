@@ -38,12 +38,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import java.io.File;
+
 /**
  * Base class for Settings fragments, with some helper functions and dialog management.
  */
 public class SettingsPreferenceFragment extends PreferenceFragment implements DialogCreatable {
 
     private static final String TAG = "SettingsPreferenceFragment";
+
+    protected static final int REQUEST_PICK_WALLPAPER = 201;
 
     private static final int MENU_HELP = Menu.FIRST + 100;
 
@@ -318,5 +322,11 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Di
                     + ")");
             return false;
         }
+    }
+
+    public Uri getSettingsExternalUri(String fileName) {
+        File dir = getActivity().getExternalCacheDir();
+        File wallpaper = new File(dir, fileName);
+        return Uri.fromFile(wallpaper);
     }
 }

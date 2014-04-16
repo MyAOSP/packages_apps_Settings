@@ -329,7 +329,8 @@
     <string name="lockscreen_quick_unlock_summary_disabled">Disabled hit enter to unlock</string>
     <!-- Lockscreen background -->
     <string name="lockscreen_background">Background</string>
-    <string name="lockscreen_background_style_title">Lockscreen background style</string>
+    <string name="lockscreen_background_style_title">Lockscreen background</string>
+    <string name="setting_lockscreen_background">Applying background</string>
     <!-- Lock screen misc. settings -->
     <string name="lockscreen_battery_status_title">Battery status</string>
     <string name="lockscreen_battery_status_charging">Only when charging</string>
@@ -958,7 +959,7 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
 
     <!-- Custom background shared strings -->
     <string name="background_color_fill_title">Background color</string>
-    <string name="background_default">Default style background</string>
+    <string name="background_default">Default background</string>
     <string name="background_color_fill">Color fill</string>
     <string name="background_wallpaper">Custom wallpaper</string>
     <string name="transparency">Background transparency</string>
