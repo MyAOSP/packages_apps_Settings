@@ -76,11 +76,13 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
     private static final String KEY_ENABLE_CAMERA = "keyguard_enable_camera";
     private static final String KEY_BATTERY_STATUS = "lockscreen_battery_status";
     private static final String LOCKSCREEN_BACKGROUND_STYLE = "lockscreen_background_style";
+    private static final String KEY_LOCKSCREEN_MODLOCK_ENABLED = "lockscreen_modlock_enabled";
 
     private static final String LOCKSCREEN_WALLPAPER_TEMP_NAME = ".lockwallpaper";
 
     private CheckBoxPreference mEnableKeyguardWidgets;
     private CheckBoxPreference mEnableCameraWidget;
+    private CheckBoxPreference mEnableModLock;
     private ListPreference mLockBackground;
     private ListPreference mBatteryStatus;
     private LockPatternUtils mLockUtils;
@@ -108,6 +110,12 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
         // Find preferences
         mEnableKeyguardWidgets = (CheckBoxPreference) findPreference(KEY_ENABLE_WIDGETS);
         mEnableCameraWidget = (CheckBoxPreference) findPreference(KEY_ENABLE_CAMERA);
+
+        mEnableModLock = (CheckBoxPreference) findPreference(KEY_LOCKSCREEN_MODLOCK_ENABLED);
+        if (mEnableModLock != null) {
+            mEnableModLock.setOnPreferenceChangeListener(this);
+        }
+
         mBatteryStatus = (ListPreference) findPreference(KEY_BATTERY_STATUS);
 
         // Remove lockscreen button actions if device doesn't have hardware keys
@@ -115,15 +123,9 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
             generalCategory.removePreference(findPreference(KEY_LOCKSCREEN_BUTTONS));
         }
 
-        // Remove/disable custom widgets based on device RAM and policy
-        if (ActivityManager.isLowRamDeviceStatic()) {
-            // Widgets take a lot of RAM, so disable them on low-memory devices
-            widgetsCategory.removePreference(findPreference(KEY_ENABLE_WIDGETS));
-            mEnableKeyguardWidgets = null;
-        } else {
-            // Secondary user is logged in, remove all primary user specific preferences
-            checkDisabledByPolicy(mEnableKeyguardWidgets,
-                    DevicePolicyManager.KEYGUARD_DISABLE_WIDGETS_ALL);
+        // Enable or disable lockscreen widgets based on policy
+        checkDisabledByPolicy(mEnableKeyguardWidgets,
+                DevicePolicyManager.KEYGUARD_DISABLE_WIDGETS_ALL);
         }
 
         // Enable or disable camera widget based on device and policy
@@ -134,6 +136,19 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
         } else if (mLockUtils.isSecure()) {
             checkDisabledByPolicy(mEnableCameraWidget,
                     DevicePolicyManager.KEYGUARD_DISABLE_SECURE_CAMERA);
+        }
+
+        boolean canEnableModLockscreen = false;
+        final Bundle keyguard_metadata = Utils.getApplicationMetadata(
+                getActivity(), "com.android.keyguard");
+        if (keyguard_metadata != null) {
+            canEnableModLockscreen = keyguard_metadata.getBoolean(
+                    "com.cyanogenmod.keyguard", false);
+        }
+
+        if (mEnableModLock != null && !canEnableModLockscreen) {
+            generalCategory.removePreference(mEnableModLock);
+            mEnableModLock = null;
         }
 
         // Remove cLock settings item if not installed
@@ -207,6 +222,7 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
+    @Override
     public boolean onPreferenceChange(Preference preference, Object objValue) {
         if (preference == mLockBackground) {
             int index = mLockBackground.findIndexOfValue(objValue.toString());
@@ -219,8 +235,22 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
                     Settings.System.LOCKSCREEN_BATTERY_VISIBILITY, value);
             mBatteryStatus.setSummary(mBatteryStatus.getEntries()[index]);
             return true;
+        } else if (preference == mEnableModLock) {
+            boolean value = (Boolean) objValue;
+            Settings.System.putInt(cr, Settings.System.LOCKSCREEN_MODLOCK_ENABLED,
+                    value ? 1 : 0);
+            return true;
         }
         return false;
+    }
+
+    /**
+     * Checks if the device has hardware buttons.
+     * @return has Buttons
+     */
+    public boolean hasButtons() {
+        return (getResources().getInteger(
+                com.android.internal.R.integer.config_deviceHardwareKeys) > 0);
     }
 
     /**
@@ -260,14 +290,6 @@ public class LockscreenInterface extends SettingsPreferenceFragment implements
                 toastLockscreenWallpaperStatus(false);
             }
         }
-    }
-
-    /**
-     * Checks if the device has hardware buttons.
-     * @return has Buttons
-     */
-    public boolean hasButtons() {
-        return !getResources().getBoolean(com.android.internal.R.bool.config_showNavigationBar);
     }
 
     private Bitmap getBitmapFromUri(Uri uri) {
