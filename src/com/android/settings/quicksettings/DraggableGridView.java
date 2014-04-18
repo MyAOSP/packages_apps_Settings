@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
@@ -56,8 +55,7 @@ public class DraggableGridView extends ViewGroup implements
         public abstract void onDelete(int index);
     }
 
-    protected int colCount = 3;
-    protected int mTileTextSize = 12;
+    private int colCount = 3;
     private Context mContext;
     protected int childWidth, childHeight, cellGap, scroll = 0;
     protected float lastDelta = 0;
@@ -92,7 +90,6 @@ public class DraggableGridView extends ViewGroup implements
         setChildrenDrawingOrderEnabled(true);
         setClipChildren(false);
         setClipToPadding(false);
-        colCount = 3;
     }
 
     public void setColumnCount(int count) {
@@ -152,7 +149,6 @@ public class DraggableGridView extends ViewGroup implements
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        updateTilesPerRow();
         int N = getChildCount();
         for (int i = 0; i < N; i++) {
             View v = (View) getChildAt(i);
@@ -303,7 +299,7 @@ public class DraggableGridView extends ViewGroup implements
         TextView addDeleteTile = ((TextView) getChildAt(getChildCount() - 1).findViewById(R.id.tile_textview));
         addDeleteTile.setCompoundDrawablesRelativeWithIntrinsicBounds(0, resid, 0, 0);
         addDeleteTile.setText(stringid);
-        addDeleteTile.setTextSize(1, mTileTextSize);
+        addDeleteTile.setTextSize(1, QSUtils.updateTileTextSize(colCount));
         addDeleteTile.setTextColor(QSUtils.getTileTextColor(mContext));
     }
 
@@ -348,7 +344,7 @@ public class DraggableGridView extends ViewGroup implements
                     break;
                 } else {
                     isDelete = false;
-                    getChildAt(dragged).setBackgroundColor(Color.GRAY);
+                    getChildAt(dragged).setBackgroundColor(Color.parseColor("#AA222222"));
                 }
                 if (lastTarget != target && target != getChildCount() - 1) {
                     if (target != -1) {
@@ -372,7 +368,7 @@ public class DraggableGridView extends ViewGroup implements
             if (dragged != -1) {
                 toggleAddDelete(false);
                 View v = getChildAt(dragged);
-                QuickSettingsTiles.setTileBackground(mContext, v);
+                QSUtils.setTileBackground(mContext, v, false);
                 if (lastTarget != -1 && !isDelete) {
                     reorderChildren(true);
                 } else {
@@ -530,47 +526,6 @@ public class DraggableGridView extends ViewGroup implements
                 lastDelta = 0;
             }
         }
-    }
-
-    void updateTileTextSize(int column) {
-        // adjust Tile Text Size based on column count
-        switch (column) {
-            case 7:
-                mTileTextSize = 8;
-                break;
-            case 6:
-                mTileTextSize = 8;
-                break;
-            case 5:
-                mTileTextSize = 9;
-                break;
-            case 4:
-                mTileTextSize = 10;
-                break;
-            case 3:
-            default:
-                mTileTextSize = 12;
-                break;
-            case 2:
-                mTileTextSize = 14;
-                break;
-            case 1:
-                mTileTextSize = 16;
-                break;
-        }
-    }
-
-    private void updateTilesPerRow() {
-        boolean mPortrait = mContext.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_PORTRAIT;
-        int columnCount = QuickSettingsTiles.getItemFromSystemUi(
-                "quick_settings_num_columns", "integer");
-        if (mPortrait) {
-            columnCount = QSUtils.getMaxColumns(mContext, Configuration.ORIENTATION_PORTRAIT);
-        } else {
-            columnCount = QSUtils.getMaxColumns(mContext, Configuration.ORIENTATION_LANDSCAPE);
-        }
-        updateTileTextSize(columnCount);
     }
 
     protected int getMaxScroll() {
