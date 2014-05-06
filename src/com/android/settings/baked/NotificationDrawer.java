@@ -261,7 +261,8 @@ public class NotificationDrawer extends SettingsPreferenceFragment implements
             intent.putExtra("aspectY", isPortrait ? height : width);
             intent.putExtra(MediaStore.EXTRA_OUTPUT,
                     getSettingsExternalUri(PANEL_VIEW_BACKGROUND_FILE_NAME));
-            startActivityForResult(intent, REQUEST_PICK_WALLPAPER);
+            startActivityForResult(Intent.createChooser(intent, "Select Image"),
+                    REQUEST_PICK_WALLPAPER);
         } else if (index == DEFAULT) {
             // Sets background to default
             Settings.System.putInt(getContentResolver(),
