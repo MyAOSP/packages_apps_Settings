@@ -328,6 +328,7 @@
     <string name="lockscreen_quick_unlock_title">Quick unlock</string>
     <string name="lockscreen_quick_unlock_summary_enabled">Enabled no need to hit enter</string>
     <string name="lockscreen_quick_unlock_summary_disabled">Disabled hit enter to unlock</string>
+    <string name="unlock_buttons_disabled_by_security">Lockscreen is secure</string>
     <!-- Lockscreen background -->
     <string name="lockscreen_wallpaper">Wallpaper</string>
     <!-- Lock screen misc. settings -->

@@ -21,6 +21,7 @@ import java.util.*;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -29,6 +30,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.android.internal.util.cm.QSUtils;
+import com.android.internal.widget.LockPatternUtils;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.settings.Utils;
@@ -50,11 +52,16 @@ public class LockscreenButtons extends SettingsPreferenceFragment
     private static final int KEY_MASK_HOME = 0x01;
     private static final int KEY_MASK_BACK = 0x02;
     private static final int KEY_MASK_MENU = 0x04;
+    private static final int KEY_MASK_CAMERA = 0x20;
 
     private ListPreference mLongBackAction;
     private ListPreference mLongHomeAction;
     private ListPreference mLongMenuAction;
     private ListPreference[] mActions;
+
+    private CheckBoxPreference mMenuUnlock;
+    private CheckBoxPreference mHomeUnlock;
+    private CheckBoxPreference mCameraUnlock;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,10 +72,23 @@ public class LockscreenButtons extends SettingsPreferenceFragment
         final boolean hasHomeKey = (deviceKeys & KEY_MASK_HOME) != 0;
         final boolean hasBackKey = (deviceKeys & KEY_MASK_BACK) != 0;
         final boolean hasMenuKey = (deviceKeys & KEY_MASK_MENU) != 0;
+        final boolean hasCameraKey = (deviceKeys & KEY_MASK_CAMERA) != 0;
 
         addPreferencesFromResource(R.xml.lockscreen_buttons_settings);
 
         PreferenceScreen prefSet = getPreferenceScreen();
+
+        mMenuUnlock = (CheckBoxPreference)
+                findPreference(Settings.System.MENU_UNLOCK_SCREEN);
+        mHomeUnlock = (CheckBoxPreference)
+                findPreference(Settings.System.HOME_UNLOCK_SCREEN);
+        mCameraUnlock = (CheckBoxPreference)
+                findPreference(Settings.System.CAMERA_UNLOCK_SCREEN);
+
+        // Hide the CameraUnlock setting if no camera button is available
+        if (!hasCameraKey) {
+            getPreferenceScreen().removePreference(mCameraUnlock);
+        }
 
         mLongBackAction = (ListPreference) prefSet.findPreference(LONG_PRESS_BACK);
         if (hasBackKey) {
@@ -82,6 +102,7 @@ public class LockscreenButtons extends SettingsPreferenceFragment
             mLongHomeAction.setKey(Settings.System.LOCKSCREEN_LONG_HOME_ACTION);
         } else {
             getPreferenceScreen().removePreference(mLongHomeAction);
+            getPreferenceScreen().removePreference(mHomeUnlock);
         }
 
         mLongMenuAction = (ListPreference) prefSet.findPreference(LONG_PRESS_MENU);
@@ -89,6 +110,7 @@ public class LockscreenButtons extends SettingsPreferenceFragment
             mLongMenuAction.setKey(Settings.System.LOCKSCREEN_LONG_MENU_ACTION);
         } else {
             getPreferenceScreen().removePreference(mLongMenuAction);
+            getPreferenceScreen().removePreference(mMenuUnlock);
         }
 
         mActions = new ListPreference[] {
@@ -123,6 +145,23 @@ public class LockscreenButtons extends SettingsPreferenceFragment
         for (ListPreference pref : mActions) {
             updateEntry(pref);
         }
+        updateUnlockButtonTypes();
+    }
+
+    private void updateUnlockButtonTypes() {
+        boolean secure = new LockPatternUtils(getActivity()).isSecure();
+
+        if (secure) {
+            mHomeUnlock.setEnabled(false);
+            mCameraUnlock.setEnabled(false);
+            mMenuUnlock.setEnabled(false);
+
+            String disabled = getString(R.string.unlock_buttons_disabled_by_security);
+            mHomeUnlock.setSummary(disabled);
+            mCameraUnlock.setSummary(disabled);
+            mMenuUnlock.setSummary(disabled);
+        }
+
     }
 
     private void updateEntry(ListPreference pref) {
