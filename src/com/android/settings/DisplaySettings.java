@@ -22,19 +22,14 @@ import static android.provider.Settings.System.SCREEN_ANIMATION_STYLE;
 import android.app.ActivityManagerNative;
 import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.hardware.display.DisplayManager;
-import android.hardware.display.WifiDisplayStatus;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -47,7 +42,6 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
-import android.provider.Settings.SettingNotFoundException;
 import android.util.Log;
 
 import com.android.internal.view.RotationPolicy;
@@ -68,6 +62,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private static final int FALLBACK_SCREEN_TIMEOUT_VALUE = 30000;
 
     private static final String KEY_SCREEN_TIMEOUT = "screen_timeout";
+    private static final String KEY_ACCELEROMETER = "accelerometer";
     private static final String KEY_FONT_SIZE = "font_size";
     private static final String KEY_SCREEN_SAVER = "screensaver";
     private static final String KEY_DISPLAY_ROTATION = "display_rotation";
@@ -75,6 +70,8 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private static final String KEY_ADVANCED_DISPLAY_SETTINGS = "advanced_display_settings";
     private static final String KEY_TAP_TO_WAKE = "double_tap_wake_gesture";
 
+    private static final String CATEGORY_ADVANCED = "advanced_display_prefs";
+    private static final String CATEGORY_DISPLAY = "display_prefs";
     private static final String CATEGORY_LIGHTS = "lights_prefs";
     private static final String KEY_NOTIFICATION_PULSE = "notification_pulse";
     private static final String KEY_BATTERY_LIGHT = "battery_light";
@@ -85,6 +82,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
 
     private static final int DLG_GLOBAL_CHANGE_WARNING = 1;
 
+    private CheckBoxPreference mAccelerometer;
     private FontDialogPreference mFontSizePref;
     private CheckBoxPreference mWakeWhenPluggedOrUnplugged;
     private CheckBoxPreference mScreenOffAnimation;
@@ -127,13 +125,15 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
 
         addPreferencesFromResource(R.xml.display_settings);
 
+        PreferenceCategory displayPrefs = (PreferenceCategory) findPreference(CATEGORY_DISPLAY);
+
         mDisplayRotationPreference = (PreferenceScreen) findPreference(KEY_DISPLAY_ROTATION);
 
         mScreenSaverPreference = findPreference(KEY_SCREEN_SAVER);
         if (mScreenSaverPreference != null
                 && getResources().getBoolean(
                         com.android.internal.R.bool.config_dreamsSupported) == false) {
-            getPreferenceScreen().removePreference(mScreenSaverPreference);
+            displayPrefs.removePreference(mScreenSaverPreference);
         }
 
         mScreenTimeoutPreference = (ListPreference) findPreference(KEY_SCREEN_TIMEOUT);
@@ -149,48 +149,62 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         mFontSizePref.setOnPreferenceChangeListener(this);
         mFontSizePref.setOnPreferenceClickListener(this);
 
+        PreferenceCategory advancedPrefs = (PreferenceCategory) findPreference(CATEGORY_ADVANCED);
+
         mAdaptiveBacklight = (CheckBoxPreference) findPreference(KEY_ADAPTIVE_BACKLIGHT);
         if (!isAdaptiveBacklightSupported()) {
-            getPreferenceScreen().removePreference(mAdaptiveBacklight);
+            advancedPrefs.removePreference(mAdaptiveBacklight);
             mAdaptiveBacklight = null;
         }
 
         mTapToWake = (CheckBoxPreference) findPreference(KEY_TAP_TO_WAKE);
         if (!isTapToWakeSupported()) {
-            getPreferenceScreen().removePreference(mTapToWake);
+            advancedPrefs.removePreference(mTapToWake);
             mTapToWake = null;
         }
 
-
         Utils.updatePreferenceToSpecificActivityFromMetaDataOrRemove(getActivity(),
-                getPreferenceScreen(), KEY_ADVANCED_DISPLAY_SETTINGS);
+                advancedPrefs, KEY_ADVANCED_DISPLAY_SETTINGS);
 
         mWakeWhenPluggedOrUnplugged =
                 (CheckBoxPreference) findPreference(KEY_WAKE_WHEN_PLUGGED_OR_UNPLUGGED);
+
+        mScreenColorSettings = (PreferenceScreen) findPreference(KEY_SCREEN_COLOR_SETTINGS);
+        if (!isPostProcessingSupported()) {
+            advancedPrefs.removePreference(mScreenColorSettings);
+        }
 
         boolean allowsScreenOffAnimation = res.getBoolean(
                 com.android.internal.R.bool.config_screenOffAnimation);
         boolean requiresFadeAnimation = res.getBoolean(
                 com.android.internal.R.bool.config_animateScreenLights);
-        mScreenOffAnimation = (CheckBoxPreference) findPreference(KEY_SCREEN_ANIMATION_OFF);
+        mScreenOffAnimation = (CheckBoxPreference)
+                findPreference(KEY_SCREEN_ANIMATION_OFF);
         mScreenAnimationStylePreference =
                 (ListPreference) findPreference(KEY_SCREEN_ANIMATION_STYLE);
 
         if (allowsScreenOffAnimation) {
             if (!requiresFadeAnimation) {
+                advancedPrefs.removePreference(mScreenOffAnimation);
+                final boolean animationEnabled =
+                        Settings.System.getInt(resolver,
+                                Settings.System.SCREEN_OFF_ANIMATION, 1) != 0;
                 final int currentAnimation =
                         Settings.System.getInt(resolver, SCREEN_ANIMATION_STYLE, 0);
-                mScreenAnimationStylePreference.setValue(String.valueOf(currentAnimation));
+
                 mScreenAnimationStylePreference.setOnPreferenceChangeListener(this);
-                updateScreenAnimationStylePreferenceDescription(currentAnimation);
+                if (animationEnabled) {
+                    mScreenAnimationStylePreference.setValue(String.valueOf(currentAnimation));
+                    updateScreenAnimationStylePreferenceDescription(currentAnimation + 1);
+                } else {
+                    mScreenAnimationStylePreference.setValue(String.valueOf(-1));
+                    updateScreenAnimationStylePreferenceDescription(0);
+                }
             } else {
-                getPreferenceScreen().removePreference(mScreenAnimationStylePreference);
-                mScreenAnimationStylePreference.setValue(String.valueOf(1));
+                advancedPrefs.removePreference(mScreenAnimationStylePreference);
             }
         } else {
-            mScreenOffAnimation.setChecked(false);
-            getPreferenceScreen().removePreference(mScreenOffAnimation);
-            getPreferenceScreen().removePreference(mScreenAnimationStylePreference);
+            advancedPrefs.removePreference(mScreenAnimationStylePreference);
         }
 
         boolean hasNotificationLed = res.getBoolean(
@@ -215,11 +229,6 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
             }
         } else {
             getPreferenceScreen().removePreference(lightPrefs);
-        }
-
-        mScreenColorSettings = (PreferenceScreen) findPreference(KEY_SCREEN_COLOR_SETTINGS);
-        if (!isPostProcessingSupported()) {
-            getPreferenceScreen().removePreference(mScreenColorSettings);
         }
     }
 
@@ -509,8 +518,22 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         if (KEY_SCREEN_ANIMATION_STYLE.equals(key)) {
             int value = Integer.parseInt((String) objValue);
             try {
-                Settings.System.putInt(getContentResolver(), SCREEN_ANIMATION_STYLE, value);
-                updateScreenAnimationStylePreferenceDescription(value);
+                if (value == -1) {
+                    // disabled
+                    Settings.System.putInt(getContentResolver(),
+                            Settings.System.SCREEN_OFF_ANIMATION, 0);
+                    updateScreenAnimationStylePreferenceDescription(0);
+                } else {
+                    // enabled
+                    Settings.System.putInt(getContentResolver(),
+                            Settings.System.SCREEN_OFF_ANIMATION, 1);
+                    Settings.System.putInt(getContentResolver(),
+                            SCREEN_ANIMATION_STYLE, value);
+
+                    // the indexing here is off by one since the first (disabled)
+                    // value is -1 and the method expects an index.
+                    updateScreenAnimationStylePreferenceDescription(value + 1);
+                }
             } catch (NumberFormatException e) {
                 Log.e(TAG, "could not persist screen animation style setting", e);
             }

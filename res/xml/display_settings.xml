@@ -18,24 +18,13 @@
         android:title="@string/display_settings"
         xmlns:settings="http://schemas.android.com/apk/res/com.android.settings">
 
-        <com.android.settings.BrightnessPreference
-            android:title="@string/brightness"
-            android:persistent="false"/>
+    <com.android.settings.BrightnessPreference
+        android:title="@string/brightness"
+        android:persistent="false"/>
 
-        <PreferenceScreen
-            android:persistent="false"
-            android:key="screencolor_settings"
-            android:title="@string/screencolor">
-            <intent
-                android:action="android.intent.action.MAIN"
-                android:targetPackage="com.android.settings"
-                android:targetClass="com.android.settings.ScreenColorSettings" />
-        </PreferenceScreen>
-
-        <PreferenceScreen
-                android:key="wallpaper"
-                android:title="@string/wallpaper_settings_title"
-                android:fragment="com.android.settings.WallpaperTypeSettings" />
+    <PreferenceCategory
+        android:key="display_prefs"
+        android:title="@string/display_settings_title">
 
         <PreferenceScreen
             android:key="display_rotation"
@@ -50,11 +39,6 @@
             android:entries="@array/screen_timeout_entries"
             android:entryValues="@array/screen_timeout_values" />
 
-        <PreferenceScreen
-            android:key="screensaver"
-            android:title="@string/screensaver_settings_title"
-            android:fragment="com.android.settings.DreamSettings" />
-
         <com.android.settings.FontDialogPreference
             android:key="font_size"
             android:title="@string/title_font_size"
@@ -62,21 +46,43 @@
             android:dialogTitle="@string/dialog_title_font_size" />
 
         <PreferenceScreen
+            android:key="screensaver"
+            android:title="@string/screensaver_settings_title"
+            android:fragment="com.android.settings.DreamSettings" />
+
+        <PreferenceScreen
             android:key="wifi_display"
             android:title="@string/wifi_display_settings_title"
             android:fragment="com.android.settings.wfd.WifiDisplaySettings" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="lights_prefs"
+        android:title="@string/lights_category_title">
+
+        <PreferenceScreen
+            android:key="notification_pulse"
+            android:title="@string/notification_pulse_title"
+            android:fragment="com.android.settings.notificationlight.NotificationLightSettings" />
+
+        <PreferenceScreen
+            android:key="battery_light"
+            android:title="@string/battery_light_title"
+            android:fragment="com.android.settings.notificationlight.BatteryLightSettings" />
+
+    </PreferenceCategory>
+
+    <!-- DeviceParts Device Specific Display settings -->
+    <PreferenceCategory
+        android:key="advanced_display_prefs"
+        android:title="@string/advanced_settings">
 
         <CheckBoxPreference
             android:key="adaptive_backlight"
             android:title="@string/adaptive_backlight_title"
             android:summary="@string/adaptive_backlight_summary"
             android:defaultValue="true" />
-
-        <CheckBoxPreference
-            android:key="wake_when_plugged_or_unplugged"
-            android:title="@string/wake_when_plugged_or_unplugged_title"
-            android:summary="@string/wake_when_plugged_or_unplugged_summary"
-            android:defaultValue="false" />
 
         <CheckBoxPreference
             android:key="double_tap_wake_gesture"
@@ -86,6 +92,12 @@
         <com.android.settings.baked.SystemSettingCheckBoxPreference
             android:key="double_tap_sleep_gesture"
             android:title="@string/status_bar_double_tap_to_sleep_title"
+            android:defaultValue="false" />
+
+        <CheckBoxPreference
+            android:key="wake_when_plugged_or_unplugged"
+            android:title="@string/wake_when_plugged_or_unplugged_title"
+            android:summary="@string/wake_when_plugged_or_unplugged_summary"
             android:defaultValue="false" />
 
         <com.android.settings.baked.SystemSettingCheckBoxPreference
@@ -100,20 +112,25 @@
             android:entryValues="@array/screen_animation_style_values"
             android:dependency="screen_off_animation" />
 
-        <PreferenceCategory
-            android:key="lights_prefs"
-            android:title="@string/lights_category_title">
+        <PreferenceScreen
+            android:persistent="false"
+            android:key="screencolor_settings"
+            android:title="@string/screencolor">
+            <intent
+                android:action="android.intent.action.MAIN"
+                android:targetPackage="com.android.settings"
+                android:targetClass="com.android.settings.ScreenColorSettings" />
+        </PreferenceScreen>
 
-            <PreferenceScreen
-                android:key="notification_pulse"
-                android:title="@string/notification_pulse_title"
-                android:fragment="com.android.settings.notificationlight.NotificationLightSettings" />
+        <Preference
+            android:key="advanced_display_settings"
+            android:title="@string/radio_controls_title">
+            <intent
+                android:action="com.cyanogenmod.action.LAUNCH_DEVICE_SETTINGS"
+                android:targetPackage="com.cyanogenmod.settings.device"
+                android:targetClass="com.cyanogenmod.settings.device.DisplaySettings" />
+        </Preference>
 
-            <PreferenceScreen
-                android:key="battery_light"
-                android:title="@string/battery_light_title"
-                android:fragment="com.android.settings.notificationlight.BatteryLightSettings" />
-
-        </PreferenceCategory>
+    </PreferenceCategory>
 
 </PreferenceScreen>
