@@ -141,7 +141,7 @@ public class StatusBar extends SettingsPreferenceFragment implements
 
         parseClockDateFormats();
 
-        if (Utils.isWifiOnly(getActivity()))
+        if (Utils.isWifiOnly(getActivity())
                 || (MSimTelephonyManager.getDefault().isMultiSimEnabled())) {
             mSignalCategory.removePreference(mStatusBarSignal);
             mPrefs.removePreference(mSignalCategory);
