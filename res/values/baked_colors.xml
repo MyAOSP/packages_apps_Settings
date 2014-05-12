@@ -19,6 +19,14 @@
     <color name="battery_red">#FFFF0000</color>
     <color name="white">@color/battery_white</color>
     <color name="transparent">#00000000</color>
+
     <!-- Quicksettings tiles -->
     <color name="qs_default_background_color">#FF1F1F1F</color>
+
+    <!-- Linear color bar -->
+    <color name="linear_color_bar_left_color">#ff0099cc</color>
+    <color name="linear_color_bar_middle_color">#ff0099cc</color>
+    <color name="linear_color_bar_right_color">#ff888888</color>
+    <color name="linear_color_bar_gray_color">#ff555555</color>
+    <color name="linear_color_bar_white_color">#ffffffff</color>
 </resources>
