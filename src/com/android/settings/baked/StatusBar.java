@@ -86,7 +86,8 @@ public class StatusBar extends SettingsPreferenceFragment implements
     private ColorPickerPreference mBatteryTextChargingColor;
     private ColorPickerPreference mColorPicker;
     private ListPreference mStatusBarBattery;
-    private ListPreference mCircleAnimSpeed;private ListPreference mClockStyle;
+    private ListPreference mCircleAnimSpeed;
+    private ListPreference mClockStyle;
     private ListPreference mClockAmPmStyle;
     private ListPreference mClockDateDisplay;
     private ListPreference mClockDateStyle;
