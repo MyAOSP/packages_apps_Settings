@@ -155,8 +155,6 @@
   <string name="wake_when_plugged_or_unplugged_title">הער מסך בעת חיבור</string>
   <string name="wake_when_plugged_or_unplugged_summary">הדלק את המסך כאשר מקור חשמל מחובר או מנותק מהמכשיר</string>
   <string name="screen_animation_off_title">אנימציה לכיבוי מסך</string>
-  <string name="screen_animation_style_title">סגנון אנימציית כיבוי מסך</string>
-  <string name="screen_animation_style_disabled">מושבת</string>
   <string name="screen_animation_style_electronbeam">טלוויזיה ישנה</string>
   <string name="screen_animation_style_fade">עמעום</string>
   <string name="edit_light_settings">עריכת הגדרות אור</string>
