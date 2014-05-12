@@ -65,7 +65,8 @@
     <string name="icons_settings_title">Icons</string>
     <string name="fonts_settings_title">Fonts</string>
     <string name="wallpaper_settings_title">Wallpapers</string>
-    <string name="lockscreen_wallpaper_settings_title">Lockscreen Wallpapers</string>
+    <string name="lockscreen_wallpaper_settings_title">Lockscreen Wallpaper</string>
+    <string name="lockscreen_wallpaper_settings_summary">Set a different wallpaper on your lockscreen</string>
     <string name="bootanim_settings_title">Boot Animations</string>
     <string name="soundpack_settings_title">Sound Packs</string>
 
@@ -328,9 +329,7 @@
     <string name="lockscreen_quick_unlock_summary_enabled">Enabled no need to hit enter</string>
     <string name="lockscreen_quick_unlock_summary_disabled">Disabled hit enter to unlock</string>
     <!-- Lockscreen background -->
-    <string name="lockscreen_background">Background</string>
-    <string name="lockscreen_background_style_title">Lockscreen background</string>
-    <string name="setting_lockscreen_background">Applying background</string>
+    <string name="lockscreen_wallpaper">Wallpaper</string>
     <!-- Lock screen misc. settings -->
     <string name="lockscreen_battery_status_title">Battery status</string>
     <string name="lockscreen_battery_status_charging">Only when charging</string>
