@@ -25,8 +25,11 @@
             android:id="@+id/lockscreen_wallpaper_settings"
             android:title="@string/lockscreen_wallpaper_settings_title"
             android:summary="@string/lockscreen_wallpaper_settings_summary">
-            <intent android:targetPackage="com.cyanogenmod.trebuchet"
-                    android:targetClass="com.android.launcher3.LockWallpaperPickerActivity" />
+
+            <intent
+                android:targetPackage="com.android.wallpapercropper"
+                android:targetClass="com.android.wallpapercropper.LockWallpaperPickerActivity"  />
+
         </Preference>
 
     </PreferenceCategory>
@@ -40,7 +43,10 @@
             android:fragment="com.android.settings.SecuritySettings"
             android:title="@string/screen_security_category"
             android:summary="@string/screen_security_summary">
-            <extra android:name="cm_security" android:value="true" />
+
+            <extra
+                android:name="cm_security" android:value="true" />
+
         </PreferenceScreen>
 
         <ListPreference
@@ -79,8 +85,8 @@
             android:title="@string/lockscreen_custom_widgets_title" />
 
         <CheckBoxPreference
-                android:key="keyguard_enable_camera"
-                android:title="@string/lockscreen_enable_camera_title" />
+            android:key="keyguard_enable_camera"
+            android:title="@string/lockscreen_enable_camera_title" />
 
         <!-- Lock clock -->
         <PreferenceScreen
