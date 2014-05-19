@@ -43,9 +43,11 @@ public class SystemUiSettings extends SettingsPreferenceFragment  implements
     private static final String CATEGORY_NAVBAR = "navigation_bar";
     private static final String CATEGORY_STATUSBAR = "status_bar_panel";
     private static final String KEY_SCREEN_GESTURE_SETTINGS = "touch_screen_gesture_settings";
+    private static final String NAVBAR_BUTTON_TINT = "navbar_button_tint";
 
     private ListPreference mExpandedDesktopPref;
     private CheckBoxPreference mExpandedDesktopNoNavbarPref;
+    private ColorPickerPreference mNavbarButtonTint;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,9 @@ public class SystemUiSettings extends SettingsPreferenceFragment  implements
         mExpandedDesktopPref = (ListPreference) findPreference(KEY_EXPANDED_DESKTOP);
         mExpandedDesktopNoNavbarPref =
                 (CheckBoxPreference) findPreference(KEY_EXPANDED_DESKTOP_NO_NAVBAR);
+
+        // Navbar button color tint
+        mNavbarButtonTint = (ColorPickerPreference) findPreference(NAVBAR_BUTTON_TINT);
 
         Utils.updatePreferenceToSpecificActivityFromMetaDataOrRemove(getActivity(),
                 prefStatusBar, KEY_SCREEN_GESTURE_SETTINGS);
@@ -101,6 +106,28 @@ public class SystemUiSettings extends SettingsPreferenceFragment  implements
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerListeners();
+        updateSummaries();
+    }
+
+    private void registerListeners() {
+        mNavbarButtonTint.setOnPreferenceChangeListener(this);
+    }
+
+    private void updateSummaries() {
+        mNavbarButtonTint.setSummary(ColorPickerPreference.convertToARGB(
+                Settings.System.getInt(mContentResolver, Settings.System.NAVIGATION_BAR_TINT,
+                com.android.internal.R.color.white)));
+    }
+
+    private void setDefaultValues() {
+        Settings.System.putInt(mContentResolver, Settings.System.NAVIGATION_BAR_TINT,
+                com.android.internal.R.color.white);
+    }
+
     public boolean onPreferenceChange(Preference preference, Object objValue) {
         if (preference == mExpandedDesktopPref) {
             int expandedDesktopValue = Integer.valueOf((String) objValue);
@@ -109,6 +136,14 @@ public class SystemUiSettings extends SettingsPreferenceFragment  implements
         } else if (preference == mExpandedDesktopNoNavbarPref) {
             boolean value = (Boolean) objValue;
             updateExpandedDesktop(value ? 2 : 0);
+            return true;
+        } else if (preference == mNavbarButtonTint) {
+            String hex = ColorPickerPreference.convertToARGB(
+                    Integer.valueOf(String.valueOf(newValue)));
+            preference.setSummary(hex);
+            int intHex = ColorPickerPreference.convertToColorInt(hex);
+            Settings.System.putInt(mContentResolver,
+                    Settings.System.NAVIGATION_BAR_TINT, intHex);
             return true;
         }
 

@@ -524,7 +524,7 @@
     <string name="enable_translucent_decor_title">Enable translucent decor</string>
     <!-- Navigation Bar -->
     <string name="navigation_bar_category">Navigation bar</string>
-    <string name="navigation_bar_title">Navigation bar buttons &amp; layout</string>
+    <string name="navigation_bar_title">Buttons &amp; layout</string>
     <string name="navigation_bar_left_title">Left handed mode</string>
     <string name="navigation_bar_left_summary">Place the navigation bar on the left side of the screen in landscape mode</string>
     <string name="navigation_bar_help_text">1 - To begin editing, tap the lock icon\n\n2 - Tap any button to assign or change functionality\n\n3 - Long press any button to rearrange the order\n\n4 - To save, tap the lock icon again\n\n5 - To restore system default, tap the reset button\n\n</string>
@@ -535,13 +535,11 @@
     <string name="navigation_bar_reset_toast">Navigation bar reset to default</string>
     <string name="navigation_bar_menu_editable">Editable</string>
     <string name="navigation_bar_menu_locked">Locked</string>
-    <!-- Navbar settings -->
-    <string name="navbar_settings_title">Navigation bar settings</string>
-    <string name="navbar_button_tint_title">Navigation button tint</string>
+    <string name="navbar_button_tint_title">Button tint</string>
     <!-- Navigation ring shortcuts -->
-    <string name="navigation_ring_title">Navbar ring shortcuts</string>
+    <string name="navigation_ring_title">Ring shortcuts</string>
     <string name="navring_target_reset_message">Delete all user created navigation bar shortcuts and restore to default?</string>
-    <string name="navring_target_reset">Navbar ring shortcuts reset to default</string>
+    <string name="navring_target_reset">Navigation bar ring shortcuts reset to default</string>
     <string name="navring_action_open_ime_switcher">Open IME Switcher</string>
     <string name="navring_action_kill_app">Kill app</string>
     <string name="navring_action_none">None</string>
