@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.preference.CheckBoxPreference;
+import android.preference.ColorPickerPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -43,10 +44,12 @@ public class SystemUiSettings extends SettingsPreferenceFragment  implements
     private static final String CATEGORY_NAVBAR = "navigation_bar";
     private static final String CATEGORY_STATUSBAR = "status_bar_panel";
     private static final String KEY_SCREEN_GESTURE_SETTINGS = "touch_screen_gesture_settings";
+    private static final String KEY_NAVIGATION_BAR_LEFT = "navigation_bar_left";
     private static final String NAVBAR_BUTTON_TINT = "navbar_button_tint";
 
     private ListPreference mExpandedDesktopPref;
     private CheckBoxPreference mExpandedDesktopNoNavbarPref;
+    private CheckBoxPreference mNavigationBarLeftPref;
     private ColorPickerPreference mNavbarButtonTint;
 
     @Override
@@ -64,6 +67,9 @@ public class SystemUiSettings extends SettingsPreferenceFragment  implements
         mExpandedDesktopPref = (ListPreference) findPreference(KEY_EXPANDED_DESKTOP);
         mExpandedDesktopNoNavbarPref =
                 (CheckBoxPreference) findPreference(KEY_EXPANDED_DESKTOP_NO_NAVBAR);
+
+        // Navigation bar left
+        mNavigationBarLeftPref = (CheckBoxPreference) findPreference(KEY_NAVIGATION_BAR_LEFT);
 
         // Navbar button color tint
         mNavbarButtonTint = (ColorPickerPreference) findPreference(NAVBAR_BUTTON_TINT);
@@ -119,12 +125,12 @@ public class SystemUiSettings extends SettingsPreferenceFragment  implements
 
     private void updateSummaries() {
         mNavbarButtonTint.setSummary(ColorPickerPreference.convertToARGB(
-                Settings.System.getInt(mContentResolver, Settings.System.NAVIGATION_BAR_TINT,
+                Settings.System.getInt(getContentResolver(), Settings.System.NAVIGATION_BAR_TINT,
                 com.android.internal.R.color.white)));
     }
 
     private void setDefaultValues() {
-        Settings.System.putInt(mContentResolver, Settings.System.NAVIGATION_BAR_TINT,
+        Settings.System.putInt(getContentResolver(), Settings.System.NAVIGATION_BAR_TINT,
                 com.android.internal.R.color.white);
     }
 
@@ -139,10 +145,10 @@ public class SystemUiSettings extends SettingsPreferenceFragment  implements
             return true;
         } else if (preference == mNavbarButtonTint) {
             String hex = ColorPickerPreference.convertToARGB(
-                    Integer.valueOf(String.valueOf(newValue)));
+                    Integer.valueOf(String.valueOf(objValue)));
             preference.setSummary(hex);
             int intHex = ColorPickerPreference.convertToColorInt(hex);
-            Settings.System.putInt(mContentResolver,
+            Settings.System.putInt(getContentResolver(),
                     Settings.System.NAVIGATION_BAR_TINT, intHex);
             return true;
         }
