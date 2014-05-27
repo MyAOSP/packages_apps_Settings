@@ -964,6 +964,10 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
     <string name="whisperpush_registration_summary">Register for WhisperPush to enable encrypted SMS.</string>
     <string name="whisperpush_identitykey_title">Review identity keys</string>
 
+    <!-- Settings checkbox for updating CM recovery on boot -->
+    <string name="update_recovery_title">Update CM recovery</string>
+    <string name="update_recovery_summary">Update recovery when installing system updates</string>
+
     <!-- =======
     Misc strings
     ============ -->
