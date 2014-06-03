@@ -57,7 +57,7 @@
             android:title="@string/musicfx_title" />
 
     <!-- Headset -->
-    <com.android.settings.cyanogenmod.SystemSettingCheckBoxPreference
+    <com.android.settings.baked.SystemSettingCheckBoxPreference
             android:key="headset_connect_player"
             android:title="@string/headset_connect_player_title"
             android:summary="@string/headset_connect_player_summary"
