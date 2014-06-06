@@ -1736,7 +1736,7 @@
             android:theme="@style/CryptKeeperBlankTheme"
         />
 
-        <!-- baked activities Start -->
+        <!-- Baked activities Start -->
         <activity android:name="Settings$SystemSettingsActivity"
                 android:label="@string/system_settings_title"
                 android:taskAffinity=""
@@ -1750,6 +1750,20 @@
             <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
                 android:resource="@id/system_settings" />
         </activity>
+
+        <activity android:name="Settings$QuickSettingsConfigActivity"
+                android:label="@string/tile_picker_title"
+                android:taskAffinity=""
+                android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.quicksettings.QuickSettingsTiles" />
+        </activity>
+
+        <activity android:name=".quicksettings.QuickSettingsTiles" />
 
         <activity android:name=".baked.AutoBrightnessSetup"
                 android:excludeFromRecents="true"
@@ -1801,6 +1815,15 @@
                 android:resource="@id/profiles_settings" />
         </activity-alias>
 
+        <!-- "StatusBar settings" quick link -->
+        <activity android:name="Settings$StatusBarSettingsActivity"
+                android:label="@string/status_bar_title"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:clearTaskOnLaunch="true">
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.baked.StatusBar" />
+        </activity>
+
         <activity android:name=".profiles.ProfileConfig" />
 
         <activity android:name=".profiles.AppGroupList" />
@@ -1829,13 +1852,22 @@
 
         <activity android:name=".baked.LockscreenButtons" />
 
-        <activity android:name=".ApnEditor" />
+        <activity android:name=".baked.PerformanceSettings" />
+        <activity android:name="Settings$PerformanceSettingsActivity"
+                android:label="@string/performance_settings_title"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:clearTaskOnLaunch="true">
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.baked.PerformanceSettings" />
+        </activity>
 
-        <activity android:name=".baked.LockscreenInterface" />
+        <activity android:name=".ApnEditor" />
 
         <activity android:name=".notificationlight.NotificationLightSettings" />
 
         <activity android:name=".notificationlight.BatteryLightSettings" />
+
+        <activity android:name=".baked.LockscreenInterface" />
 
          <!-- "Blacklist settings" UI, used only on voice-capable phone devices. -->
         <activity android:name="Settings$BlacklistSettingsActivity"
@@ -1854,24 +1886,6 @@
                 android:resource="@id/security_settings" />
         </activity>
 
-        <!-- "StatusBar settings" quick link -->
-        <activity android:name="Settings$StatusBarSettingsActivity"
-                android:label="@string/status_bar_title"
-                android:configChanges="orientation|keyboardHidden|screenSize"
-                android:clearTaskOnLaunch="true">
-            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
-                android:value="com.android.settings.baked.StatusBar" />
-        </activity>
-
-        <!-- "PerformanceSettings" quick link -->
-        <activity android:name="Settings$PerformanceSettingsActivity"
-                android:label="@string/performance_settings_title"
-                android:configChanges="orientation|keyboardHidden|screenSize"
-                android:clearTaskOnLaunch="true">
-            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
-                android:value="com.android.settings.baked.PerformanceSettings" />
-        </activity>
-
         <activity android:name=".baked.PrivacySettings" />
 
         <activity android:name="Settings$QuietHoursSettingsActivity"
@@ -1888,18 +1902,6 @@
                        android:resource="@id/sound_settings" />
         </activity>
 
-        <activity android:name="Settings$QuickSettingsConfigActivity"
-                android:label="@string/tile_picker_title"
-                android:taskAffinity=""
-                android:excludeFromRecents="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
-                android:value="com.android.settings.quicksettings.QuickSettingsTiles" />
-        </activity>
-
         <activity android:name="Settings$ThemeSettingsActivity"
                   android:label="@string/themes_settings_title"
                   android:taskAffinity=""
@@ -1913,7 +1915,6 @@
             <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
                        android:value="com.android.settings.ThemeSettings" />
         </activity>
-
         <!-- baked activities End -->
 
         <!-- Pseudo-activity used to provide an intent-filter entry point to encryption settings -->
@@ -1922,7 +1923,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.app.action.START_ENCRYPTION" />
-                <category android:name="android.intent.category.DEFAULT" /> />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
                 android:value="com.android.settings.CryptKeeperSettings" />
@@ -2077,7 +2078,7 @@
         </receiver>
 
         <receiver android:name=".baked.BootReceiver" android:enabled="true">
-            <intent-filter>
+            <intent-filter android:priority="2147483647">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
