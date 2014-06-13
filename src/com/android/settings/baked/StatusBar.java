@@ -34,7 +34,6 @@ import android.preference.PreferenceCategory;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
-import android.telephony.MSimTelephonyManager;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -141,8 +140,7 @@ public class StatusBar extends SettingsPreferenceFragment implements
 
         parseClockDateFormats();
 
-        if (Utils.isWifiOnly(getActivity())
-                || (MSimTelephonyManager.getDefault().isMultiSimEnabled())) {
+        if (Utils.isWifiOnly(getActivity())) {
             mSignalCategory.removePreference(mStatusBarSignal);
             mPrefs.removePreference(mSignalCategory);
         }

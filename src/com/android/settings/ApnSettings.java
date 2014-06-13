@@ -41,7 +41,6 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.provider.Telephony;
 import android.text.TextUtils;
-import android.telephony.MSimTelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -89,7 +88,6 @@ public class ApnSettings extends SettingsPreferenceFragment implements
     private RestoreApnProcessHandler mRestoreApnProcessHandler;
     private HandlerThread mRestoreDefaultApnThread;
 
-    private int mSubscription = 0;
     private String mSelectedKey;
 
     private boolean mUseNvOperatorForEhrpd = SystemProperties.getBoolean(
@@ -129,19 +127,9 @@ public class ApnSettings extends SettingsPreferenceFragment implements
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.apn_settings);
-        mSubscription = getActivity().getIntent().getIntExtra(SelectSubscription.SUBSCRIPTION_KEY,
-                MSimTelephonyManager.getDefault().getDefaultSubscription());
-        Log.d(TAG, "onCreate received sub :" + mSubscription);
+
         mMobileStateFilter = new IntentFilter(
                 TelephonyIntents.ACTION_ANY_DATA_CONNECTION_STATE_CHANGED);
-
-        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
-            mPreferApnUri = Uri.parse(PREFERRED_APN_URI + "/" + mSubscription);
-        } else {
-            mPreferApnUri = PREFERAPN_URI;
-        }
-        Log.d(TAG, "Preferred APN Uri is set to '" + mPreferApnUri.toString() + "'");
-
         setHasOptionsMenu(true);
     }
 
@@ -405,8 +393,8 @@ public class ApnSettings extends SettingsPreferenceFragment implements
                 result.add(mccMncForEhrpd);
             }
         }
-        String mccMncFromSim = MSimTelephonyManager.getTelephonyProperty(
-                TelephonyProperties.PROPERTY_APN_SIM_OPERATOR_NUMERIC, mSubscription, null);
+        String mccMncFromSim = SystemProperties.get(
+                TelephonyProperties.PROPERTY_APN_SIM_OPERATOR_NUMERIC, null);
         if (mccMncFromSim != null && mccMncFromSim.length() > 0) {
             result.add(mccMncFromSim);
         }
