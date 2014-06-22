@@ -17,13 +17,16 @@
 package com.android.settings.baked;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.ContentResolver;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.CheckBoxPreference;
 import android.preference.ColorPickerPreference;
 import android.preference.EditTextPreference;
@@ -103,14 +106,11 @@ public class StatusBar extends SettingsPreferenceFragment implements
     private PreferenceCategory mSignalCategory;
     private PreferenceCategory mMiscCategory;
 
+    private ContentObserver mSettingsObserver;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createCustomView();
-    }
-
-    private PreferenceScreen createCustomView() {
-        mCheckPreferences = false;
 
         addPreferencesFromResource(R.xml.status_bar);
         mPrefs = getPreferenceScreen();
@@ -133,6 +133,7 @@ public class StatusBar extends SettingsPreferenceFragment implements
         mStatusBarSignal = (ListPreference) findPreference(STATUS_BAR_SIGNAL);
         mStatusBarBrightnessControl = (CheckBoxPreference)
                 findPreference(Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL);
+        refreshBrightnessControl();
 
         if (mClockDateFormat.getValue() == null) {
             mClockDateFormat.setValue("EEE");
@@ -149,21 +150,37 @@ public class StatusBar extends SettingsPreferenceFragment implements
             mMiscCategory.removePreference(mStatusBarBrightnessControl);
         }
 
+        mSettingsObserver = new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                refreshBrightnessControl();
+            }
+
+            @Override
+            public void onChange(boolean selfChange) {
+                onChange(selfChange, null);
+            }
+        };
+
         setHasOptionsMenu(true);
-        mCheckPreferences = true;
-        return mPrefs;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mCheckPreferences) {
-            setListeners();
-            setDefaultValues();
-            updateSummaries();
-            updateBatteryStyleOptions();
-            updateVisibility();
-        }
+        setListeners();
+        setDefaultValues();
+        updateSummaries();
+        updateBatteryStyleOptions();
+        updateVisibility();
+        getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                Settings.System.SCREEN_BRIGHTNESS_MODE), true, mSettingsObserver);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getContentResolver().unregisterContentObserver(mSettingsObserver);
     }
 
     @Override
@@ -301,17 +318,6 @@ public class StatusBar extends SettingsPreferenceFragment implements
                 mClockDateFormat.setEnabled(true);
             }
         }
-
-        try {
-            if (Settings.System.getInt(getActivity().getContentResolver(),
-                    Settings.System.SCREEN_BRIGHTNESS_MODE)
-                    == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
-                mStatusBarBrightnessControl.setEnabled(false);
-                mStatusBarBrightnessControl.setSummary(R.string.status_bar_toggle_info);
-            }
-        } catch (SettingNotFoundException e) {
-            // Do nothing
-        }
     }
 
     @Override
@@ -446,6 +452,20 @@ public class StatusBar extends SettingsPreferenceFragment implements
             return true;
         }
         return false;
+    }
+
+    private void refreshBrightnessControl() {
+        try {
+            if (Settings.System.getInt(getContentResolver(),
+                    Settings.System.SCREEN_BRIGHTNESS_MODE)
+                    == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+                mStatusBarBrightnessControl.setSummary(R.string.status_bar_toggle_info);
+            } else {
+                mStatusBarBrightnessControl.setSummary(R.string.status_bar_toggle_brightness_summary);
+            }
+        } catch (SettingNotFoundException e) {
+            // Do nothing
+        }
     }
 
     private void updateBatteryStyleOptions() {
