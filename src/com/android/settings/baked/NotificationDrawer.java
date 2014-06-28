@@ -26,6 +26,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.preference.ColorPickerPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -42,6 +43,7 @@ import android.widget.Toast;
 
 import com.android.settings.R;
 import com.android.settings.baked.SeekBarPreference;
+import com.android.settings.baked.SystemSettingSwitchPreference;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.settings.Utils;
 
@@ -69,6 +71,7 @@ public class NotificationDrawer extends SettingsPreferenceFragment implements
     private ListPreference mCollapseOnDismiss;
     private ListPreference mPanelBackground;
     private SeekBarPreference mWallpaperAlpha;
+    private SystemSettingSwitchPreference mSwitchPreference;
 
     private PreferenceCategory mPanelViewBackground;
 
@@ -80,6 +83,9 @@ public class NotificationDrawer extends SettingsPreferenceFragment implements
 
         addPreferencesFromResource(R.xml.notification_drawer);
         PreferenceScreen prefScreen = getPreferenceScreen();
+
+        mSwitchPreference = (SystemSettingSwitchPreference)
+                findPreference(Settings.System.HEADS_UP_NOTIFICATION);
 
         mPanelViewBackground = (PreferenceCategory) findPreference(PANEL_VIEW_BACKGROUND);
 
@@ -96,6 +102,10 @@ public class NotificationDrawer extends SettingsPreferenceFragment implements
         setDefaultValues();
         updateSummaries();
         updateVisiblePreferences();
+        boolean headsUpEnabled = Settings.System.getIntForUser(
+                getActivity().getContentResolver(),
+                Settings.System.HEADS_UP_NOTIFICATION, 0, UserHandle.USER_CURRENT) == 1;
+        mSwitchPreference.setChecked(headsUpEnabled);
     }
 
     protected void setListeners() {
