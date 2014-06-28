@@ -30,7 +30,7 @@
     <string name="wifi_ssid_input_limit">SSID exceeds maximum length</string>
 
     <!-- Settings main menu category heading. Interface (Launcher, Themes, System). [CHAR LIMIT=40] -->
-    <string name="header_category_interface">Personalization</string>
+    <string name="header_category_customization">Customization</string>
 
     <!-- Connection override toggles (not all are used at this time ) -->
     <string name="toggleWifi">Wi-Fi</string>
@@ -328,9 +328,9 @@
     <string name="lockscreen_enable_modlock_title">Custom lock screen</string>
 
     <!-- =============
-    Interface settings
+    Status Bar settings
     ================== -->
-    <string name="system_settings_title">Interface</string>
+    <string name="status_bar_settings_title">Status bar</string>
     <string name="status_bar_double_tap_to_sleep_title">Double-tap to sleep</string>
     <!-- StatusBar -->
     <string name="status_bar_title">Statusbar</string>
@@ -397,6 +397,20 @@
     <string name="clock_date_style_uppercase">Uppercase</string>
     <string name="clock_date_format_custom">Custom java format</string>
     <string name="status_bar_clock_style_reset_message">Reset clock color?</string>
+    <!-- Expanded desktop -->
+    <string name="expanded_desktop_disabled">Disabled</string>
+    <string name="expanded_desktop_status_bar">Status bar visible</string>
+    <string name="expanded_desktop_no_status_bar">Status bar hidden</string>
+    <string name="expanded_desktop_style">Expanded desktop style</string>
+    <string name="expanded_desktop_system_bars_visibility">Disable in lock screen</string>
+    <string name="expanded_desktop_system_bars_visibility_summary">Show status and navigation bar in lock screen during expanded desktop mode</string>
+    <!-- Enable translucent decor -->
+    <string name="enable_translucent_decor_title">Enable translucent decor</string>
+
+    <!-- =============
+    Notification Drawer settings
+    ================== -->
+    <string name="notification_drawer_settings_title">Notification drawer</string>
     <!-- Quick settings panel -->
     <string name="quick_settings_panel_title">Quick Settings panel</string>
     <string name="title_collapse_panel">Auto close panel</string>
@@ -989,7 +1003,7 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
     <string name="stylus_icon_enabled_summary">Show the pointer icon when hovering or drawing with the stylus</string>
 
     <!-- Stylus Gestures -->
-    <string name="gestures_settings_title">Stylus gestures</string>
+    <string name="gestures_settings_header_title">Stylus gestures</string>
     <string name="category_spen_title">Stylus gestures</string>
     <string name="enable_subcat_title">Stylus</string>
     <string name="enable_spen_title_head">Enable gestures</string>

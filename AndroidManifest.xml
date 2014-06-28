@@ -1697,8 +1697,8 @@
         />
 
         <!-- Baked activities Start -->
-        <activity android:name="Settings$SystemSettingsActivity"
-                android:label="@string/system_settings_title"
+        <activity android:name="Settings$StatusBarSettingsActivity"
+                android:label="@string/status_bar_settings_title"
                 android:taskAffinity=""
                 android:excludeFromRecents="true">
             <intent-filter>
@@ -1706,9 +1706,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
-                android:value="com.android.settings.baked.SystemUiSettings" />
+                android:value="com.android.settings.baked.StatusBar" />
             <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
-                android:resource="@id/system_settings" />
+                android:resource="@id/status_bar_settings" />
         </activity>
 
         <activity android:name="Settings$QuickSettingsConfigActivity"

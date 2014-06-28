@@ -44,6 +44,35 @@
     </Preference>
 
     <PreferenceCategory
+        android:key="navigation_bar"
+        android:title="@string/navigation_bar_category" >
+
+        <PreferenceScreen
+            android:key="navigation_bar"
+            android:fragment="com.android.settings.baked.NavBar"
+            android:title="@string/navigation_bar_title" />
+
+        <ColorPickerPreference
+            android:key="navbar_button_tint"
+            android:title="@string/navbar_button_tint_title"
+            android:defaultValue="@*android:color/white"
+            android:enableDefaultColorPanels="true"
+            android:inputEnabled="true" />
+
+        <PreferenceScreen
+            android:key="navigation_ring"
+            android:fragment="com.android.settings.baked.NavRing"
+            android:title="@string/navigation_ring_title" />
+
+        <com.android.settings.baked.SystemSettingCheckBoxPreference
+            android:key="navigation_bar_left"
+            android:title="@string/navigation_bar_left_title"
+            android:summary="@string/navigation_bar_left_summary"
+            android:defaultValue="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="home_key"
         android:title="@string/hardware_keys_home_key_title" >
 

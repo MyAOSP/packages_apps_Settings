@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.preference.CheckBoxPreference;
 import android.preference.ColorPickerPreference;
 import android.preference.EditTextPreference;
@@ -44,6 +45,7 @@ import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.WindowManagerGlobal;
 import android.widget.EditText;
 
 import com.android.settings.R;
@@ -60,7 +62,10 @@ public class StatusBar extends SettingsPreferenceFragment implements
     private static final String STATUS_BAR_BATTERY_SETTINGS = "status_bar_battery_settings";
     private static final String STATUS_BAR_SIGNAL_SETTINGS = "status_bar_signal_settings";
     private static final String STATUS_BAR_MISC_SETTINGS = "status_bar_misc_settings";
-
+    // Expanded desktop
+    private static final String KEY_EXPANDED_DESKTOP = "expanded_desktop";
+    private static final String KEY_EXPANDED_DESKTOP_NO_NAVBAR = "expanded_desktop_no_navbar";
+    private static final String CATEGORY_EXPANDED_DESKTOP = "expanded_desktop_category";
     // Battery
     private static final String BATTERY_STYLE = "battery_style";
     private static final String BATTERY_COLOR = "battery_color";
@@ -84,6 +89,7 @@ public class StatusBar extends SettingsPreferenceFragment implements
     private static final int CUSTOM_CLOCK_DATE_FORMAT_INDEX = 18;
 
     private CheckBoxPreference mStatusBarBrightnessControl;
+    private CheckBoxPreference mExpandedDesktopNoNavbarPref;
     private ColorPickerPreference mBatteryColor;
     private ColorPickerPreference mBatteryTextColor;
     private ColorPickerPreference mBatteryTextChargingColor;
@@ -96,6 +102,7 @@ public class StatusBar extends SettingsPreferenceFragment implements
     private ListPreference mClockDateStyle;
     private ListPreference mClockDateFormat;
     private ListPreference mStatusBarSignal;
+    private ListPreference mExpandedDesktopPref;
 
     private PackageManager pm;
     private PreferenceScreen mPrefs;
@@ -105,6 +112,7 @@ public class StatusBar extends SettingsPreferenceFragment implements
     private PreferenceCategory mBatteryCategory;
     private PreferenceCategory mSignalCategory;
     private PreferenceCategory mMiscCategory;
+    private PreferenceCategory expandedCategory;
 
     private ContentObserver mSettingsObserver;
 
@@ -117,6 +125,12 @@ public class StatusBar extends SettingsPreferenceFragment implements
         mBatteryCategory = (PreferenceCategory) findPreference(STATUS_BAR_BATTERY_SETTINGS);
         mSignalCategory = (PreferenceCategory) findPreference(STATUS_BAR_SIGNAL_SETTINGS);
         mMiscCategory = (PreferenceCategory) findPreference(STATUS_BAR_MISC_SETTINGS);
+        expandedCategory = (PreferenceCategory) findPreference(CATEGORY_EXPANDED_DESKTOP);
+
+        // Expanded desktop
+        mExpandedDesktopPref = (ListPreference) findPreference(KEY_EXPANDED_DESKTOP);
+        mExpandedDesktopNoNavbarPref =
+                (CheckBoxPreference) findPreference(KEY_EXPANDED_DESKTOP_NO_NAVBAR);
 
         mStatusBarBattery = (ListPreference) findPreference(BATTERY_STYLE);
         mBatteryColor = (ColorPickerPreference) findPreference(BATTERY_COLOR);
@@ -148,6 +162,30 @@ public class StatusBar extends SettingsPreferenceFragment implements
 
         if (Utils.isTablet(getActivity())) {
             mMiscCategory.removePreference(mStatusBarBrightnessControl);
+        }
+
+        int expandedDesktopValue = Settings.System.getInt(getContentResolver(),
+                Settings.System.EXPANDED_DESKTOP_STYLE, 0);
+        try {
+            // Only show the navigation bar category on devices that has a navigation bar
+            // unless we are forcing it via development settings
+            boolean forceNavbar = android.provider.Settings.System.getInt(getContentResolver(),
+                    android.provider.Settings.System.DEV_FORCE_SHOW_NAVBAR, 0) == 1;
+            boolean hasNavBar = WindowManagerGlobal.getWindowManagerService().hasNavigationBar()
+                    || forceNavbar;
+            if (hasNavBar) {
+                mExpandedDesktopPref.setOnPreferenceChangeListener(this);
+                mExpandedDesktopPref.setValue(String.valueOf(expandedDesktopValue));
+                updateExpandedDesktop(expandedDesktopValue);
+                expandedCategory.removePreference(mExpandedDesktopNoNavbarPref);
+            } else {
+                // Hide no-op "Status bar visible" expanded desktop mode
+                mExpandedDesktopNoNavbarPref.setOnPreferenceChangeListener(this);
+                mExpandedDesktopNoNavbarPref.setChecked(expandedDesktopValue > 0);
+                expandedCategory.removePreference(mExpandedDesktopPref);
+            }
+        } catch (RemoteException e) {
+            Log.e(TAG, "Error getting navigation bar status");
         }
 
         mSettingsObserver = new ContentObserver(new Handler()) {
@@ -322,10 +360,15 @@ public class StatusBar extends SettingsPreferenceFragment implements
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (!mCheckPreferences) {
-            return false;
-        }
-        if (preference == mStatusBarBattery) {
+        if (preference == mExpandedDesktopPref) {
+            int expandedDesktopValue = Integer.valueOf((String) newValue);
+            updateExpandedDesktop(expandedDesktopValue);
+            return true;
+        } else if (preference == mExpandedDesktopNoNavbarPref) {
+            boolean value = (Boolean) newValue;
+            updateExpandedDesktop(value ? 2 : 0);
+            return true;
+        } else if (preference == mStatusBarBattery) {
             int index = mStatusBarBattery.findIndexOfValue((String) newValue);
             mStatusBarBattery.setSummary(mStatusBarBattery.getEntries()[index]);
             int value = Integer.valueOf((String) newValue);
@@ -402,7 +445,7 @@ public class StatusBar extends SettingsPreferenceFragment implements
             Settings.System.putInt(getContentResolver(),
                     Settings.System.STATUS_BAR_SIGNAL_TEXT, value);
             return true;
-          } else if (preference == mClockDateStyle) {
+        } else if (preference == mClockDateStyle) {
             int index = mClockDateStyle.findIndexOfValue((String) newValue);
             mClockDateStyle.setSummary(mClockDateStyle.getEntries()[index]);
             int value = Integer.parseInt((String) newValue);
@@ -555,5 +598,30 @@ public class StatusBar extends SettingsPreferenceFragment implements
             }
         }
         mClockDateFormat.setEntries(parsedDateEntries);
+    }
+
+    private void updateExpandedDesktop(int value) {
+        ContentResolver cr = getContentResolver();
+        Resources res = getResources();
+        int summary = -1;
+
+        Settings.System.putInt(cr, Settings.System.EXPANDED_DESKTOP_STYLE, value);
+
+        if (value == 0) {
+            // Expanded desktop deactivated
+            Settings.System.putInt(cr, Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 0);
+            Settings.System.putInt(cr, Settings.System.EXPANDED_DESKTOP_STATE, 0);
+            summary = R.string.expanded_desktop_disabled;
+        } else if (value == 1) {
+            Settings.System.putInt(cr, Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 1);
+            summary = R.string.expanded_desktop_status_bar;
+        } else if (value == 2) {
+            Settings.System.putInt(cr, Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 1);
+            summary = R.string.expanded_desktop_no_status_bar;
+        }
+
+        if (mExpandedDesktopPref != null && summary != -1) {
+            mExpandedDesktopPref.setSummary(res.getString(summary));
+        }
     }
 }

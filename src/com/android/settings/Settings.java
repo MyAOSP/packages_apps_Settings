@@ -74,18 +74,11 @@ import com.android.settings.accounts.ManageAccountsSettings;
 import com.android.settings.applications.AppOpsSummary;
 import com.android.settings.applications.ManageApplications;
 import com.android.settings.applications.ProcessStatsUi;
+import com.android.settings.baked.*;
+import com.android.settings.baked.superuser.PolicyNativeFragment;
 import com.android.settings.blacklist.BlacklistSettings;
 import com.android.settings.bluetooth.BluetoothEnabler;
 import com.android.settings.bluetooth.BluetoothSettings;
-import com.android.settings.baked.ButtonSettings;
-import com.android.settings.baked.LockscreenInterface;
-import com.android.settings.baked.MoreDeviceSettings;
-import com.android.settings.baked.PerformanceSettings;
-import com.android.settings.quicksettings.QuickSettingsTiles;
-import com.android.settings.baked.QuietHours;
-import com.android.settings.baked.StatusBar;
-import com.android.settings.baked.SystemUiSettings;
-import com.android.settings.baked.superuser.PolicyNativeFragment;
 import com.android.settings.deviceinfo.Memory;
 import com.android.settings.deviceinfo.UsbSettings;
 import com.android.settings.fuelgauge.PowerUsageSummary;
@@ -105,6 +98,7 @@ import com.android.settings.profiles.AppGroupConfig;
 import com.android.settings.profiles.ProfileConfig;
 import com.android.settings.profiles.ProfileEnabler;
 import com.android.settings.profiles.ProfilesSettings;
+import com.android.settings.quicksettings.QuickSettingsTiles;
 import com.android.settings.tts.TextToSpeechSettings;
 import com.android.settings.users.UserSettings;
 import com.android.settings.voicewakeup.VoiceWakeupEnabler;
@@ -137,6 +131,8 @@ public class Settings extends PreferenceActivity
         "com.android.settings.PARENT_FRAGMENT_TITLE";
     private static final String META_DATA_KEY_PARENT_FRAGMENT_CLASS =
         "com.android.settings.PARENT_FRAGMENT_CLASS";
+
+    private static final String KEY_SCREEN_GESTURE_SETTINGS = "touch_screen_gesture_settings";
 
     private static final String EXTRA_UI_OPTIONS = "settings:ui_options";
 
@@ -183,9 +179,10 @@ public class Settings extends PreferenceActivity
             R.id.print_settings,
             R.id.nfc_payment_settings,
             R.id.home_settings,
-            R.id.interface_settings,
+            R.id.customization,
             R.id.lock_screen_settings,
-            R.id.system_settings,
+            R.id.status_bar_settings,
+            R.id.notification_drawer_settings,
             R.id.button_settings,
             R.id.privacy_guard_settings
     };
@@ -384,7 +381,8 @@ public class Settings extends PreferenceActivity
         ApnSettings.class.getName(),
         HomeSettings.class.getName(),
         LockscreenInterface.class.getName(),
-        SystemUiSettings.class.getName(),
+        StatusBar.class.getName(),
+        NotificationDrawer.class.getName(),
         ButtonSettings.class.getName(),
         MoreDeviceSettings.class.getName(),
         ProfilesSettings.class.getName(),
@@ -600,7 +598,8 @@ public class Settings extends PreferenceActivity
             Header header = target.get(i);
             // Ids are integers, so downcasting
             int id = (int) header.id;
-            if (id == R.id.operator_settings || id == R.id.manufacturer_settings) {
+            if (id == R.id.operator_settings || id == R.id.manufacturer_settings ||
+                    id == R.id.device_specific_gesture_settings) {
                 Utils.updateHeaderToSpecificActivityFromMetaDataOrRemove(this, target, header);
             } else if (id == R.id.wifi_settings) {
                 // Remove WiFi Settings if WiFi service is not available.
@@ -1260,7 +1259,7 @@ public class Settings extends PreferenceActivity
     public static class ApnSettingsActivity extends Settings { /* empty */ }
     public static class ApnEditorActivity extends Settings { /* empty */ }
     public static class BlacklistSettingsActivity extends Settings { /* empty */ }
-    public static class SystemSettingsActivity extends Settings { /* empty */ }
+    public static class StatusBarActivity extends Settings { /* empty */ }
     public static class PerformanceSettingsActivity extends Settings { /* empty */ }
     public static class QuietHoursSettingsActivity extends Settings { /* empty */ }
     public static class QuickSettingsConfigActivity extends Settings { /* empty */ }
