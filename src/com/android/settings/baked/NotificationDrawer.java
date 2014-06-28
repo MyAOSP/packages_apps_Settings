@@ -43,7 +43,6 @@ import android.widget.Toast;
 
 import com.android.settings.R;
 import com.android.settings.baked.SeekBarPreference;
-import com.android.settings.baked.SystemSettingSwitchPreference;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.settings.Utils;
 
@@ -70,7 +69,7 @@ public class NotificationDrawer extends SettingsPreferenceFragment implements
     private ColorPickerPreference mPanelColorFill;
     private ListPreference mCollapseOnDismiss;
     private ListPreference mPanelBackground;
-    private Preference mHeadsUp
+    private Preference mHeadsUp;
     private SeekBarPreference mWallpaperAlpha;
 
     private PreferenceCategory mPanelViewBackground;
