@@ -70,8 +70,8 @@ public class NotificationDrawer extends SettingsPreferenceFragment implements
     private ColorPickerPreference mPanelColorFill;
     private ListPreference mCollapseOnDismiss;
     private ListPreference mPanelBackground;
+    private Preference mHeadsUp
     private SeekBarPreference mWallpaperAlpha;
-    private SystemSettingSwitchPreference mSwitchPreference;
 
     private PreferenceCategory mPanelViewBackground;
 
@@ -84,8 +84,7 @@ public class NotificationDrawer extends SettingsPreferenceFragment implements
         addPreferencesFromResource(R.xml.notification_drawer);
         PreferenceScreen prefScreen = getPreferenceScreen();
 
-        mSwitchPreference = (SystemSettingSwitchPreference)
-                findPreference(Settings.System.HEADS_UP_NOTIFICATION);
+        mHeadsUp = findPreference(Settings.System.HEADS_UP_NOTIFICATION);
 
         mPanelViewBackground = (PreferenceCategory) findPreference(PANEL_VIEW_BACKGROUND);
 
@@ -102,10 +101,10 @@ public class NotificationDrawer extends SettingsPreferenceFragment implements
         setDefaultValues();
         updateSummaries();
         updateVisiblePreferences();
-        boolean headsUpEnabled = Settings.System.getIntForUser(
-                getActivity().getContentResolver(),
-                Settings.System.HEADS_UP_NOTIFICATION, 0, UserHandle.USER_CURRENT) == 1;
-        mSwitchPreference.setChecked(headsUpEnabled);
+        boolean headsUpEnabled = Settings.System.getInt(
+                getContentResolver(), Settings.System.HEADS_UP_NOTIFICATION, 0) == 1;
+        mHeadsUp.setSummary(headsUpEnabled
+                ? R.string.summary_heads_up_enabled : R.string.summary_heads_up_disabled);
     }
 
     protected void setListeners() {
