@@ -554,6 +554,8 @@
     <string name="navigation_bar_menu_editable">Editable</string>
     <string name="navigation_bar_menu_locked">Locked</string>
     <string name="navbar_button_tint_title">Button tint</string>
+    <string name="navigation_bar_arrow_keys_title">Arrow keys while typing</string>
+    <string name="navigation_bar_arrow_keys_summary">Display left and right cursor buttons while typing</string>
     <!-- Navigation ring shortcuts -->
     <string name="navigation_ring_title">Ring shortcuts</string>
     <string name="navring_target_reset_message">Delete all user created navigation bar shortcuts and restore to default?</string>
