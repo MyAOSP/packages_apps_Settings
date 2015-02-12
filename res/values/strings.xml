@@ -6288,5 +6288,9 @@
     <string name="remove_blacklist_number_title">Remove number</string>
     <string name="remove_blacklist_entry">Do you want to remove this blacklist entry?</string>
     <string name="select_contact">Select contact</string>
+  
+    <!-- Keyboard and Input ASS methods -->
+    <string name="show_enter_key_title">Show enter key</string>
+    <string name="show_enter_key_summary">Force keyboard to show enter instead of emoticon key</string>
 
 </resources>
