@@ -115,6 +115,7 @@ public class SecuritySettings extends SettingsPreferenceFragment
     // CyanogenMod Additions
     private static final String KEY_APP_SECURITY_CATEGORY = "app_security";
     private static final String KEY_BLACKLIST = "blacklist";
+    private static final String KEY_APPOPS = "appops";
 
     private PackageManager mPM;
     private DevicePolicyManager mDPM;
@@ -141,6 +142,8 @@ public class SecuritySettings extends SettingsPreferenceFragment
     private Intent mTrustAgentClickIntent;
     // CyanogenMod Additions
     private PreferenceScreen mBlacklist;
+    // App Ops Addition
+    private PreferenceScreen mAppops;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -380,7 +383,18 @@ public class SecuritySettings extends SettingsPreferenceFragment
                     root.findPreference(KEY_APP_SECURITY_CATEGORY);
             appCategory.removePreference(mBlacklist);
         }
+        
+        // App Ops
+        mAppops = (PreferenceScreen) root.findPreference(KEY_APPOPS);
 
+        // Determine options based on AppOps config boolean
+        if (!getResources().getBoolean(R.bool.config_show_AppOps)) {
+            // No App Ops app installed, remove dependent options
+            PreferenceGroup appCategory = (PreferenceGroup)
+                    root.findPreference(KEY_APP_SECURITY_CATEGORY);
+            appCategory.removePreference(mAppops);
+        }
+        
         // The above preferences come and go based on security state, so we need to update
         // the index. This call is expected to be fairly cheap, but we may want to do something
         // smarter in the future.
