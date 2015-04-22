@@ -25,6 +25,12 @@
             android:key="blacklist"
             android:title="@string/blacklist_title"
             android:fragment="com.android.settings.blacklist.BlacklistSettings" />
+        
+        <PreferenceScreen   
+            android:key="appops"
+            android:title="@string/appops_settings"
+            android:summary="@string/appops_summary"
+            android:fragment="com.android.settings.applications.AppOpsSummary" />
 
     </PreferenceCategory>
 

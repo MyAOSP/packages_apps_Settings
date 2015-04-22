@@ -41,5 +41,8 @@
    <!-- Volume Rocker Wake Support. Some devices do not support (PMU) this.
         Setting to false will disable Volume Rocker Wake support -->
     <bool name="config_show_volumeRockerWake">true</bool>
+    
+    <!-- Enable the hidden App Ops Activity in Security Settings -->
+    <bool name="config_show_AppOps">false</bool>
 
 </resources>
