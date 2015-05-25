@@ -6069,8 +6069,11 @@
     <!-- SuperSU header name - the app hides itself from launcher based on this resource name being present in com.android.settings -->
     <string name="supersu_title">SuperSU</string>
 
+    <!-- Button Settings -->
+    <string name="button_settings_title">Buttons</string>
+
     <!-- Navigation Bar -->
-    <string name="navigation_bar_title">Navigation bar</string>
+    <string name="navigation_bar_settings">Navigation bar settings</string>
 
     <!-- Navigation Bar Height -->
     <string name="navigation_bar_height">Height</string>
@@ -6083,7 +6086,7 @@
     <string name="navigation_bar_height_24">24dp</string>
     <string name="navigation_bar_height_20">20dp</string>
     <string name="navigation_bar_height_0">0dp (hide)</string>
-  
+
     <!-- Restart SystemUI -->
     <string name="restart_systemui">Restart SystemUI</string>
 
@@ -6176,9 +6179,11 @@
     <string name="status_bar_double_tap_to_sleep_summary">Enable or disable to toggle double-tap to sleep on status bar</string>
 
     <!-- Status bar-->
-    <string name="status_bar_general_category">General</string>
+    <string name="status_bar_settings">Status bar settings</string>
+    <string name="status_bar_battery_settings">Battery settings</string>
+    <string name="status_bar_clock_settings">Clock settings</string>
     <string name="status_bar_title">Status bar</string>
-  
+
     <string name="status_bar_quick_qs_pulldown_title">One finger QS pull down</string>
     <string name="status_bar_quick_qs_pulldown_summary">Whether to allow one finger quick settings\nexpansion on the right side of the statusbar.</string>
 
@@ -6242,7 +6247,7 @@
     <string name="remove_blacklist_number_title">Remove number</string>
     <string name="remove_blacklist_entry">Do you want to remove this blacklist entry?</string>
     <string name="select_contact">Select contact</string>
-    
+
     <!-- AppOps additions -->
     <string name="appops_settings">App Permissions</string>
     <string name="appops_summary">Modify the permission access granted to apps</string>
@@ -6252,7 +6257,7 @@
     <!-- Status bar | Clock -->
     <string name="status_bar_clock">Clock &amp; date</string>
     <string name="status_bar_clock_title">Clock &amp; date style</string>
-    <string name="status_bar_clock_summary">Change various clock &amp; date options</string> 
+    <string name="status_bar_clock_summary">Change various clock &amp; date options</string>
     <string name="clock_title_enable">Alignment</string>
     <string name="clock_enabled">Enabled</string>
     <string name="clock_disabled">Disabled</string>
@@ -6345,7 +6350,7 @@
     <string name="remove_blacklist_number_title">Remove number</string>
     <string name="remove_blacklist_entry">Do you want to remove this blacklist entry?</string>
     <string name="select_contact">Select contact</string>
-  
+
     <!-- Keyboard and Input ASS methods -->
     <string name="show_enter_key_title">Show enter key</string>
     <string name="show_enter_key_summary">Force keyboard to show enter instead of emoticon key</string>

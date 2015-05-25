@@ -1,5 +1,5 @@
 
-package com.android.settings.simpleaosp;
+package com.android.settings.myaosp;
 
 import android.os.Bundle;
 import android.os.UserHandle;
@@ -16,7 +16,7 @@ import android.provider.Settings;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
 
-public class NavigationBarSettings extends SettingsPreferenceFragment implements
+public class ButtonSettings extends SettingsPreferenceFragment implements
 OnPreferenceChangeListener {
 
     private static final String KEY_NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
@@ -34,8 +34,8 @@ OnPreferenceChangeListener {
 
         addPreferencesFromResource(R.xml.navigation_bar_settings);
 
-	PreferenceScreen prefSet = getPreferenceScreen();
-	ContentResolver resolver = getActivity().getContentResolver();
+    PreferenceScreen prefSet = getPreferenceScreen();
+    ContentResolver resolver = getActivity().getContentResolver();
 
         mNavigationBarHeight = (ListPreference) findPreference(KEY_NAVIGATION_BAR_HEIGHT);
         mNavigationBarHeight.setOnPreferenceChangeListener(this);
@@ -45,7 +45,7 @@ OnPreferenceChangeListener {
         mNavigationBarHeight.setValue(String.valueOf(statusNavigationBarHeight));
         mNavigationBarHeight.setSummary(mNavigationBarHeight.getEntry());
 
-	mRecentsClearAll = (SwitchPreference) prefSet.findPreference(SHOW_CLEAR_ALL_RECENTS);
+    mRecentsClearAll = (SwitchPreference) prefSet.findPreference(SHOW_CLEAR_ALL_RECENTS);
         mRecentsClearAll.setChecked(Settings.System.getIntForUser(resolver,
             Settings.System.SHOW_CLEAR_ALL_RECENTS, 0, UserHandle.USER_CURRENT) == 1);
         mRecentsClearAll.setOnPreferenceChangeListener(this);
@@ -66,7 +66,7 @@ OnPreferenceChangeListener {
                     Settings.System.NAVIGATION_BAR_HEIGHT, statusNavigationBarHeight);
             mNavigationBarHeight.setSummary(mNavigationBarHeight.getEntries()[index]);
         return true;
-	} else if (preference == mRecentsClearAll) {
+    } else if (preference == mRecentsClearAll) {
             boolean show = (Boolean) objValue;
             Settings.System.putIntForUser(getActivity().getContentResolver(),
                     Settings.System.SHOW_CLEAR_ALL_RECENTS, show ? 1 : 0, UserHandle.USER_CURRENT);
@@ -81,7 +81,7 @@ OnPreferenceChangeListener {
         return false;
     }
 
-	private void updateRecentsLocation(int value) {
+    private void updateRecentsLocation(int value) {
         ContentResolver resolver = getContentResolver();
         Resources res = getResources();
         int summary = -1;

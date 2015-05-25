@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.settings.simpleaosp;
+package com.android.settings.myaosp;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -75,11 +75,11 @@ public class SoundSettings extends SettingsPreferenceFragment implements
         mVolBtnMusicCtrl.setChecked(Settings.System.getInt(getContentResolver(),
                 Settings.System.VOLUME_MUSIC_CONTROLS, 1) != 0);
         mVolBtnMusicCtrl.setOnPreferenceChangeListener(this);
- 	try {
+    try {
             if (Settings.System.getInt(getActivity().getApplicationContext().getContentResolver(),
                     Settings.System.VOLUME_ROCKER_WAKE) == 1) {
                 mVolBtnMusicCtrl.setEnabled(false);
-		mVolBtnMusicCtrl.setSummary(R.string.volume_button_toggle_info);
+        mVolBtnMusicCtrl.setSummary(R.string.volume_button_toggle_info);
             }
         } catch (SettingNotFoundException e) {
         }
@@ -115,7 +115,7 @@ public class SoundSettings extends SettingsPreferenceFragment implements
             boolean value = (Boolean) objValue;
             Settings.System.putInt(getContentResolver(), VOLUME_KEY_ADJUST_SOUND,
                     value ? 1: 0);
-	}
+    }
         if (KEY_VOLBTN_MUSIC_CTRL.equals(key)) {
             Settings.System.putInt(getContentResolver(),
                     Settings.System.VOLUME_MUSIC_CONTROLS,

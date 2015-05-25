@@ -3,24 +3,42 @@
     android:title="@string/status_bar_title" >
 
     <PreferenceCategory
-        android:key="status_bar_general_category"
-        android:title="@string/status_bar_general_category" >
+        android:key="status_bar_battery_settings"
+        android:title="@string/status_bar_battery_settings" >
 
-    <ListPreference
-        android:key="status_bar_battery_style"
-        android:title="@string/status_bar_battery_style_title"
-        android:dialogTitle="@string/status_bar_battery_style_title"
-        android:entries="@array/status_bar_battery_style_entries"
-        android:entryValues="@array/status_bar_battery_style_values" />
+        <ListPreference
+            android:key="status_bar_battery_style"
+            android:title="@string/status_bar_battery_style_title"
+            android:dialogTitle="@string/status_bar_battery_style_title"
+            android:entries="@array/status_bar_battery_style_entries"
+            android:entryValues="@array/status_bar_battery_style_values" />
 
-    <ListPreference
-        android:key="status_bar_show_battery_percent"
-        android:title="@string/status_bar_battery_percentage_title"
-        android:dialogTitle="@string/status_bar_battery_percentage_title"
-        android:entries="@array/status_bar_battery_percentage_entries"
-        android:entryValues="@array/status_bar_battery_percentage_values" />
+        <ListPreference
+            android:key="status_bar_show_battery_percent"
+            android:title="@string/status_bar_battery_percentage_title"
+            android:dialogTitle="@string/status_bar_battery_percentage_title"
+            android:entries="@array/status_bar_battery_percentage_entries"
+            android:entryValues="@array/status_bar_battery_percentage_values" />
 
-	<ListPreference
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="status_bar_clock_settings"
+        android:title="@string/status_bar_clock_settings" >
+
+        <PreferenceScreen
+            android:fragment="com.android.settings.myaosp.StatusBarClockStyle"
+            android:key="clock_style_pref"
+            android:summary="@string/status_bar_clock_summary"
+            android:title="@string/status_bar_clock" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="status_bar_settings"
+        android:title="@string/status_bar_settings" >
+
+        <ListPreference
             android:key="quick_pulldown"
             android:title="@string/title_quick_pulldown"
             android:entries="@array/quick_pulldown_entries"
@@ -28,13 +46,13 @@
             android:persistent="false" />
 
 
-	<com.android.settings.cyanogenmod.SystemSettingSwitchPreference
+        <com.android.settings.cyanogenmod.SystemSettingSwitchPreference
             android:key="status_bar_brightness_control"
             android:title="@string/status_bar_toggle_brightness"
             android:summary="@string/status_bar_toggle_brightness_summary"
             android:defaultValue="false" />
 
-	<com.android.settings.cyanogenmod.SystemSettingSwitchPreference
+        <com.android.settings.cyanogenmod.SystemSettingSwitchPreference
             android:key="double_tap_sleep_gesture"
             android:summary="@string/status_bar_double_tap_to_sleep_summary"
             android:title="@string/status_bar_double_tap_to_sleep_title" />
@@ -44,12 +62,7 @@
             android:title="@string/status_bar_notif_count_title"
             android:summary="@string/status_bar_notif_count_summary"
             android:defaultValue="false" />
-    </PreferenceCategory>
 
-    <PreferenceScreen
-            android:fragment="com.android.settings.simpleaosp.StatusBarClockStyle"
-            android:key="clock_style_pref"
-	    android:summary="@string/status_bar_clock_summary"
-            android:title="@string/status_bar_clock" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2014 The CyanogenMod Project
+ * Copyright (C) 2013 The CyanogenMod project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package com.android.settings.simpleaosp.preference;
+package com.android.settings.myaosp.preference;
 
 import android.content.Context;
-import android.preference.SwitchPreference;
+import android.preference.CheckBoxPreference;
 import android.provider.Settings;
 import android.util.AttributeSet;
 
-
-public class SystemSettingSwitchPreference extends SwitchPreference {
-
-    public SystemSettingSwitchPreference(Context context, AttributeSet attrs, int defStyle) {
+public class SystemCheckBoxPreference extends CheckBoxPreference {
+    public SystemCheckBoxPreference(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    public SystemSettingSwitchPreference(Context context, AttributeSet attrs) {
+    public SystemCheckBoxPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SystemSettingSwitchPreference(Context context) {
+    public SystemCheckBoxPreference(Context context) {
         super(context, null);
     }
 
@@ -65,11 +63,5 @@ public class SystemSettingSwitchPreference extends SwitchPreference {
         // Using getString instead of getInt so we can simply check for null
         // instead of catching an exception. (All values are stored as strings.)
         return Settings.System.getString(getContext().getContentResolver(), getKey()) != null;
-    }
-
-    @Override
-    protected void onClick() {
-        // Do nothing
-        //super.onClick();
     }
 }

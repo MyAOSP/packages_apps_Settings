@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.settings.simpleaosp.preference;
+package com.android.settings.myaosp.preference;
 
 import android.content.Context;
 import android.preference.CheckBoxPreference;
